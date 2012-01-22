@@ -192,8 +192,10 @@ describe('master', function() {
     var type = 'User'
     var id = uuid()
     beforeEach(function(done) {
-      master.register(type, function() {
-        master.insert(type, id, function(err, syndex) {
+      master.register(type, function(err) {
+        assert.ok(!err)
+        master.insert(type, id, function(err) {
+          assert.ok(!err)
           done()
         })
       })
