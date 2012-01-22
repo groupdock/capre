@@ -380,8 +380,5 @@ describe('master', function() {
         })
       })
     })
-
   })
-
-
 })
