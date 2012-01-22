@@ -201,9 +201,9 @@ describe('master', function() {
       })
     })
     it('should be able to update existing id', function(done) {
-      master.update(type, id, function(err, syndex) {
+      master.update(type, id, function(err, data) {
         assert.ok(!err)
-        assert.equal(syndex, 2)
+        assert.equal(data.syndex, 2)
         master.getSyndex(type, id, function(err, syndex) {
           assert.ok(!err)
           assert.equal(syndex, 2)
@@ -218,9 +218,10 @@ describe('master', function() {
       for (var i = 1; i <= NUM_ITEMS; i++) {
         // because of async, need to fix value of i to function scope
         var insert = function(i) {
-          master.update(type, id, function(err, syndex) {
+          master.update(type, id, function(err, data) {
             assert.ok(!err)
-            assert.equal(syndex, i + 1) // syndex 1 will be taken by initial insert
+            assert.equal(data.syndex, i + 1) // syndex 1 will be taken by initial insert
+            assert.equal(data.op, 'update')
             if (count++ === NUM_ITEMS - 1) done()
           })
         }
@@ -229,7 +230,7 @@ describe('master', function() {
     })
     it('should return err for updating on unknown type', function(done) {
       var unknownType = 'unknownType'
-      master.update(unknownType, id, function(err, syndex) {
+      master.update(unknownType, id, function(err) {
         assert.ok(err)
         assert.ok(/unknown/.test(err.message))
         done()
@@ -237,7 +238,7 @@ describe('master', function() {
     })
     it('should return err for updating on unknown item', function(done) {
       var unknownId = 'unknownid'
-      master.update(type, unknownId, function(err, syndex) {
+      master.update(type, unknownId, function(err) {
         assert.ok(err)
         assert.ok(/not found/.test(err.message))
         done()
@@ -249,15 +250,15 @@ describe('master', function() {
     var id = uuid()
     beforeEach(function(done) {
       master.register(type, function() {
-        master.upsert(type, id, function(err, syndex) {
+        master.upsert(type, id, function(err) {
           done()
         })
       })
     })
     it('should be able to update existing id', function(done) {
-      master.upsert(type, id, function(err, syndex) {
+      master.upsert(type, id, function(err, data) {
         assert.ok(!err)
-        assert.equal(syndex, 2)
+        assert.equal(data.syndex, 2)
         master.getSyndex(type, id, function(err, syndex) {
           assert.ok(!err)
           assert.equal(syndex, 2)
@@ -285,9 +286,9 @@ describe('master', function() {
       for (var i = 1; i <= NUM_ITEMS; i++) {
         // because of async, need to fix value of i to function scope
         var insert = function(i) {
-          master.upsert(type, id, function(err, syndex) {
+          master.upsert(type, id, function(err, data) {
             assert.ok(!err)
-            assert.equal(syndex, i + 1) // syndex 1 will be taken by initial insert
+            assert.equal(data.syndex, i + 1) // syndex 1 will be taken by initial insert
             if (count++ === NUM_ITEMS - 1) done()
           })
         }
