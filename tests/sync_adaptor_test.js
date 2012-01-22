@@ -307,13 +307,10 @@ describe('sync adaptor', function() {
       }
     })
     it('should get all ids > supplied index', function(done) {
-      var syndex = 12
-      syncAdaptor.sync(type, syndex, function(err, items) {
+      var currentSyndex = 12
+      syncAdaptor.sync(type, currentSyndex, function(err, items, syndex) {
         assert.ok(!err)
-        assert.equal(items.length, NUM_ITEMS - syndex)
-        assert.ok(_.every(function(item) {
-          return item.syndex > syndex
-        }))
+        assert.equal(items.length, NUM_ITEMS - currentSyndex)
         done()
       })
     })
