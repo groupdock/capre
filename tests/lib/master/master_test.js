@@ -381,4 +381,52 @@ describe('master', function() {
       })
     })
   })
+  describe('remove', function() {
+    var type = 'User'
+    var id
+    beforeEach(function(done) {
+      id = uuid()
+      master.insert(type, id, function(err) {
+        assert.ok(!err)
+        done()
+      })
+    })
+    describe('should be able to remove an object of type', function() {
+      var data
+      beforeEach(function(done) {
+        master.remove(type, id, function(err, removeData) {
+          assert.ok(!err)
+          data = removeData
+          done()
+        })
+      })
+      describe('returned data', function() {
+        it('should have syndex of two', function() {
+          assert.equal(data.syndex, 2)
+        })
+        it('should have op of remove', function() {
+          assert.equal(data.op, 'remove')
+        })
+        it('should have supplied id', function() {
+          assert.equal(data.id, id)
+        })
+      })
+    })
+    it('should return err for removing on unknown item', function(done) {
+      var unknownId = 'unknownid'
+      master.remove(type, unknownId, function(err) {
+        assert.ok(err)
+        assert.ok(/not found/.test(err.message))
+        done()
+      })
+    })
+    it('should return err for removing on unknown type', function(done) {
+      var unknownType = 'unknownType'
+      master.remove(unknownType, id, function(err) {
+        assert.ok(err)
+        assert.ok(/unknown/.test(err.message))
+        done()
+      })
+    })
+  })
 })
