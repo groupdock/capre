@@ -1,5 +1,6 @@
 var assert = require('assert')
 
+var _ = require('underscore')
 var MasterMemoryAdaptor = require('../../../../lib/master/adaptors/memory')
 
 describe('memory adaptor', function() {
@@ -45,6 +46,28 @@ describe('memory adaptor', function() {
       })
     })
   })
-
-
+  describe('getTypes', function() {
+    it('should be able to get registered types', function(done) {
+      var userType = 'User'
+      var streamType = 'Stream'
+      memoryAdaptor.register(userType, function(err) {
+        assert.ok(!err)
+        memoryAdaptor.register(streamType, function(err) {
+          assert.ok(!err)
+          memoryAdaptor.getTypes(function(err, types) {
+            assert.ok(!err)
+            assert.ok(types)
+            assert.equal(types.length, 2)
+            assert.ok(_.find(types, function(item) {
+              return item === userType
+            }))
+            assert.ok(_.find(types, function(item) {
+              return item === streamType
+            }))
+            done()
+          })
+        })
+      })
+    })
+  })
 })
