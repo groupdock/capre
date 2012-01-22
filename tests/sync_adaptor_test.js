@@ -146,5 +146,15 @@ describe('sync adaptor', function() {
         create(i)
       }
     })
+    it('should return err for creating on unknown type', function(done) {
+      var id = uuid()
+      var unknownType = 'unknownType'
+      syncAdaptor.create(unknownType, id, function(err, syndex) {
+        assert.ok(err)
+        assert.ok(/unknown/.test(err.message))
+        done()
+      })
+    })
+
   })
 })
