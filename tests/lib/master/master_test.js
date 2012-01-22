@@ -14,15 +14,14 @@ describe('master', function() {
 
   beforeEach(function(done) {
     backend = new MasterMemoryAdaptor()
-
     master = new Master(backend, done)
   })
   describe('register', function() {
     it('can register types', function(done) {
       var type = 'SomeType'
-      master.register(type, function(err, syndex) {
+      master.register(type, function(err, typeData) {
         assert.ok(!err)
-        assert.equal(syndex, 0)
+        assert.equal(typeData.syndex, 0)
         done()
       })
     })
