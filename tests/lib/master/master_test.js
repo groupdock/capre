@@ -386,7 +386,7 @@ describe('master', function() {
     var id
     beforeEach(function(done) {
       id = uuid()
-      master.insert(type, id, function(err) {
+      master.insert(type, id, function(err, data) {
         assert.ok(!err)
         done()
       })
