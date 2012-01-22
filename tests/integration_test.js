@@ -14,6 +14,12 @@ describe('getting sync', function() {
       })
     })
   })
+  it('can register a resource type', function(done) {
+    var typeName = 'some type'
+    slave.register(typeName, function() {
+
+    })
+  })
   it('can get sync num', function(done) {
     slave.getSyndex(function(err, syndex) {
       assert.ok(!err)
@@ -21,4 +27,5 @@ describe('getting sync', function() {
       done()
     })
   })
+
 })
