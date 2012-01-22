@@ -282,7 +282,6 @@ describe('sync adaptor', function() {
       var id = uuid()
       var unknownType = 'unknownType'
       syncAdaptor.upsert(unknownType, id, function(err, syndex) {
-        console.log(arguments)
         assert.ok(!err)
         assert.equal(syndex, 1)
         syncAdaptor.getSyndex(unknownType, id, function(err, syndex) {
@@ -295,25 +294,57 @@ describe('sync adaptor', function() {
   })
   describe('sync', function(type, syndex) {
     var type = 'User'
-    var NUM_ITEMS = 100
-    beforeEach(function() {
-      var count = 0
-      for (var i = 0; i < NUM_ITEMS; i++) {
-        var id = uuid()
-        syncAdaptor.insert(type, id, function(err) {
-          assert.ok(!err)
-          if (count++ === NUM_ITEMS) done()
-        })
-      }
-    })
-    it('should get all ids > supplied index', function(done) {
-      var currentSyndex = 12
-      syncAdaptor.sync(type, currentSyndex, function(err, items, syndex) {
+    it('should get ids > supplied index', function(done) {
+      var id1 = uuid()
+      syncAdaptor.insert(type, id1, function(err) {
         assert.ok(!err)
-        assert.equal(items.length, NUM_ITEMS - currentSyndex)
-        done()
+        var id2 = uuid()
+        syncAdaptor.insert(type, id2, function(err, syndex) {
+          assert.ok(!err)
+          var currentSyndex = syndex - 1
+          // we want to grab just this most recent item
+          syncAdaptor.sync(type, currentSyndex, function(err, items, returnedSyndex) {
+            assert.ok(!err)
+            assert.equal(items.length, 1)
+            assert.equal(syndex, returnedSyndex)
+            assert.equal(items[0], id2)
+            done()
+          })
+        })
       })
     })
+    describe('bulk', function() {
+      var NUM_ITEMS = 100
+      beforeEach(function() {
+        var count = 0
+        for (var i = 0; i < NUM_ITEMS; i++) {
+          var id = uuid()
+          syncAdaptor.insert(type, id, function(err) {
+            assert.ok(!err)
+            if (count++ === NUM_ITEMS) done()
+          })
+        }
+      })
+      it('should get all ids > supplied index', function(done) {
+        var currentSyndex = 12
+        syncAdaptor.sync(type, currentSyndex, function(err, items, syndex) {
+          assert.ok(!err)
+          assert.equal(items.length, NUM_ITEMS - currentSyndex)
+          done()
+        })
+      })
+    })
+    //it('shouldn\'t err for unknown types', function(done) {
+      //var syndex = 12
+      //syncAdaptor.sync(type, syndex, function(err, items, syndex) {
+        //assert.ok(!err)
+        //assert.equal(items.length, NUM_ITEMS - syndex)
+        //assert.ok(_.every(function(item) {
+          //return item.syndex > syndex
+        //}))
+        //done()
+      //})
+    //})
   })
 
 
