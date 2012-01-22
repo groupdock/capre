@@ -313,6 +313,15 @@ describe('sync adaptor', function() {
         })
       })
     })
+    it('shouldn\'t err for unknown types, just return no items', function(done) {
+      var currentSyndex = 12
+      var unknownType = 'unknownType'
+      syncAdaptor.sync(unknownType, currentSyndex, function(err, items, syndex) {
+        assert.ok(!err)
+        assert.equal(items.length, 0)
+        done()
+      })
+    })
     describe('bulk', function() {
       var NUM_ITEMS = 100
       beforeEach(function() {
@@ -334,17 +343,7 @@ describe('sync adaptor', function() {
         })
       })
     })
-    //it('shouldn\'t err for unknown types', function(done) {
-      //var syndex = 12
-      //syncAdaptor.sync(type, syndex, function(err, items, syndex) {
-        //assert.ok(!err)
-        //assert.equal(items.length, NUM_ITEMS - syndex)
-        //assert.ok(_.every(function(item) {
-          //return item.syndex > syndex
-        //}))
-        //done()
-      //})
-    //})
+
   })
 
 
