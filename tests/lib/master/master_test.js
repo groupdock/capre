@@ -112,6 +112,22 @@ describe('master', function() {
       })
     })
   })
+  describe('get', function() {
+    var type = 'User'
+    it('should get data for an id', function(done) {
+      var id = uuid()
+      master.insert(type, id, function(err) {
+        assert.ok(!err)
+        master.get(type, id, function(err, data) {
+          assert.ok(!err)
+          assert.equal(data.id, id)
+          assert.equal(data.syndex, 1)
+          assert.equal(data.op, 'insert')
+          done()
+        })
+      })
+    })
+  })
   describe('insert', function() {
     var type = 'User'
     beforeEach(function(done) {
