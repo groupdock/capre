@@ -117,11 +117,25 @@ describe('master', function() {
     beforeEach(function(done) {
       master.register(type, done)
     })
-    it('should be able to insert an object of type', function(done) {
-      var id = uuid()
-      master.insert(type, id, function(err, syndex) {
-        assert.ok(!err)
-        assert.equal(syndex, 1)
+    describe('should be able to insert an object of type', function() {
+      var data, id
+      beforeEach(function(done) {
+        id = uuid()
+        master.insert(type, id, function(err, insertData) {
+          assert.ok(!err)
+          data = insertData
+          done()
+        })
+      })
+      describe('returned data', function() {
+        it('should have syndex of one', function() {
+          assert.equal(data.syndex, 1)
+        })
+        it('should have op of insert', function() {
+          assert.equal(data.op, 'insert')
+        })
+      })
+      it('added to master list', function(done) {
         master.getSyndex(type, id, function(err, syndex) {
           assert.ok(!err)
           assert.equal(syndex, 1)
@@ -137,9 +151,9 @@ describe('master', function() {
         var id = uuid()
         // because of async, need to fix value of i to function scope
         var insert = function(i) {
-          master.insert(type, id, function(err, syndex) {
+          master.insert(type, id, function(err, data) {
             assert.ok(!err)
-            assert.equal(syndex, i)
+            assert.equal(data.syndex, i)
             if (count++ === NUM_ITEMS - 1) done()
           })
         }
@@ -148,8 +162,8 @@ describe('master', function() {
     })
     it('should return err if inserting item with existing id', function(done) {
       var id = uuid()
-      master.insert(type, id, function(err, syndex) {
-        master.insert(type, id, function(err, syndex) {
+      master.insert(type, id, function(err, data) {
+        master.insert(type, id, function(err, data) {
           assert.ok(err)
           assert.ok(/duplicate/.test(err.message))
           master.getSyndex(type, id, function(err, syndex) {
@@ -163,9 +177,9 @@ describe('master', function() {
     it('should not return err for inserting on unknown type', function(done) {
       var id = uuid()
       var unknownType = 'unknownType'
-      master.insert(unknownType, id, function(err, syndex) {
+      master.insert(unknownType, id, function(err, data) {
         assert.ok(!err)
-        assert.equal(syndex, 1)
+        assert.equal(data.syndex, 1)
         master.getSyndex(unknownType, id, function(err, syndex) {
           assert.ok(!err)
           assert.equal(syndex, 1)
@@ -251,9 +265,9 @@ describe('master', function() {
     })
     it('should be able to upsert a new object of type', function(done) {
       var id = uuid()
-      master.upsert(type, id, function(err, syndex) {
+      master.upsert(type, id, function(err, data) {
         assert.ok(!err)
-        assert.equal(syndex, 2) // remember, we inserted on in the beforeEach
+        assert.equal(data.syndex, 2) // remember, we inserted on in the beforeEach
         master.getSyndex(type, id, function(err, syndex) {
           assert.ok(!err)
           assert.equal(syndex, 2)
@@ -281,9 +295,9 @@ describe('master', function() {
     it('should not return err for upserting on unknown type', function(done) {
       var id = uuid()
       var unknownType = 'unknownType'
-      master.upsert(unknownType, id, function(err, syndex) {
+      master.upsert(unknownType, id, function(err, data) {
         assert.ok(!err)
-        assert.equal(syndex, 1)
+        assert.equal(data.syndex, 1)
         master.getSyndex(unknownType, id, function(err, syndex) {
           assert.ok(!err)
           assert.equal(syndex, 1)
@@ -299,14 +313,14 @@ describe('master', function() {
       master.insert(type, id1, function(err) {
         assert.ok(!err)
         var id2 = uuid()
-        master.insert(type, id2, function(err, syndex) {
+        master.insert(type, id2, function(err, data) {
           assert.ok(!err)
-          var currentSyndex = syndex - 1
+          var currentSyndex = data.syndex - 1
           // we want to grab just this most recent item
           master.sync(type, currentSyndex, function(err, items, returnedSyndex) {
             assert.ok(!err)
             assert.equal(items.length, 1)
-            assert.equal(syndex, returnedSyndex)
+            assert.equal(data.syndex, returnedSyndex)
             assert.equal(items[0], id2)
             done()
           })
