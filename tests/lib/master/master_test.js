@@ -10,8 +10,8 @@ var Master = require('../../../lib/master/master')
 
 describe('master', function() {
   var master
-  beforeEach(function() {
-    master = new Master()
+  beforeEach(function(done) {
+    master = new Master(done)
   })
   describe('register', function() {
     it('can register types', function(done) {
@@ -61,10 +61,11 @@ describe('master', function() {
     var master
     var type = 'User'
     before(function(done) {
-      master = new Master()
-      master.register(type, function(err) {
-        assert.ok(!err)
-        done()
+      master = new Master(function() {
+        master.register(type, function(err) {
+          assert.ok(!err)
+          done()
+        })
       })
     })
     it('should be able to get syndex for a type', function(done) {
