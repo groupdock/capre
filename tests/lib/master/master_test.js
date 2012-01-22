@@ -86,7 +86,8 @@ describe('master', function() {
     })
     it('should be able to get syndex for an id', function(done) {
       var id = uuid()
-      master.insert(type, id, function() {
+      master.insert(type, id, function(err) {
+        assert.ok(!err)
         master.getSyndex(type, id, function(err, syndex) {
           assert.ok(!err)
           assert.equal(syndex, 1)
@@ -149,6 +150,9 @@ describe('master', function() {
         })
         it('should have op of insert', function() {
           assert.equal(data.op, 'insert')
+        })
+        it('should have supplied id', function() {
+          assert.equal(data.id, id)
         })
       })
       it('added to master list', function(done) {
