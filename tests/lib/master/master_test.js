@@ -10,15 +10,12 @@ var Master = require('../../../lib/master/master')
 var MasterMemoryAdaptor = require('../../../lib/master/adaptors/memory')
 
 describe('master', function() {
-  var master, backend, options
+  var master, backend
 
   beforeEach(function(done) {
     backend = new MasterMemoryAdaptor()
-    options = {
-      syndex: 0
-    }
 
-    master = new Master(backend, options, done)
+    master = new Master(backend, done)
   })
   describe('register', function() {
     it('can register types', function(done) {
