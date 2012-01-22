@@ -7,11 +7,18 @@ var uuid = require('node-uuid')
 var sinon = require('sinon')
 
 var Master = require('../../../lib/master/master')
+var MasterMemoryAdaptor = require('../../../lib/master/adaptors/memory')
 
 describe('master', function() {
-  var master
+  var master, backend, options
+
   beforeEach(function(done) {
-    master = new Master(done)
+    backend = new MasterMemoryAdaptor()
+    options = {
+      syndex: 0
+    }
+
+    master = new Master(backend, options, done)
   })
   describe('register', function() {
     it('can register types', function(done) {
@@ -58,19 +65,11 @@ describe('master', function() {
     })
   })
   describe('getSyndex', function() {
-    var master
     var type = 'User'
-    before(function(done) {
-      master = new Master(function() {
-        master.register(type, function(err) {
-          assert.ok(!err)
-          done()
-        })
-      })
+    beforeEach(function(done) {
+      master.register(type, done)
     })
     it('should be able to get syndex for a type', function(done) {
-      var type = 'User'
-      
       master.getSyndex(type, function(err, syndex) {
         assert.ok(!err)
         assert.equal(syndex, 0)
