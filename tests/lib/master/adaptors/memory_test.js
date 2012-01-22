@@ -45,6 +45,14 @@ describe('memory adaptor', function() {
         })
       })
     })
+    it('will simply give falsey value if it didn\'t register new type', function(done) {
+      var newType = 'Stream'
+      memoryAdaptor.register(type, function(err, typeData) {
+        assert.ok(!err)
+        assert.ok(!typeData)
+        done()
+      })
+    })
   })
   describe('getTypes', function() {
     it('should be able to get registered types', function(done) {
