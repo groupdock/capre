@@ -293,6 +293,27 @@ describe('sync adaptor', function() {
       })
     })
   })
+  describe('sync', function(type, syndex) {
+    var type = 'User'
+    var NUM_ITEMS = 100
+    beforeEach(function() {
+      var count = 0
+      for (var i = 0; i < NUM_ITEMS; i++) {
+        var id = uuid()
+        syncAdaptor.insert(type, id, function(err) {
+          assert.ok(!err)
+          if (count++ === NUM_ITEMS) done()
+        })
+      }
+    })
+    it('should get all ids > supplied index', function(done) {
+      var syndex = 12
+      syncAdaptor.sync(type, syndex, function(err, items) {
+        assert.ok(!err)
+        assert.equal(items.length, NUM_ITEMS - syndex)
+        assert.ok(_.every(function(item) {
+          return item.syndex > syndex
+        }))
         done()
       })
     })
