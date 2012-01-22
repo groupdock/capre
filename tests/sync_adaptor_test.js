@@ -159,7 +159,6 @@ describe('sync adaptor', function() {
           })
         })
       })
-
     })
     it('should return err for inserting on unknown type', function(done) {
       var id = uuid()
@@ -173,17 +172,21 @@ describe('sync adaptor', function() {
   })
   describe('update', function() {
     var type = 'User'
+    var objectId = uuid()
     beforeEach(function(done) {
-      syncAdaptor.register(type, done)
+      syncAdaptor.register(type, function() {
+        syncAdaptor.insert(type, objectId, function(err, syndex) {
+          done()
+        })
+      })
     })
-    it('should be able to insert an object of type', function(done) {
-      var objectId = uuid()
-      syncAdaptor.insert(type, objectId, function(err, syndex) {
-        assert.ok(!err, err)
-        assert.equal(syndex, 1)
+    it('should be able to update existing id', function(done) {
+      syncAdaptor.update(type, objectId, function(err, syndex) {
+        assert.ok(!err)
+        assert.equal(syndex, 2)
         syncAdaptor.getSyndex(type, objectId, function(err, syndex) {
           assert.ok(!err)
-          assert.equal(syndex, 1)
+          assert.equal(syndex, 2)
           done()
         })
       })
@@ -193,27 +196,94 @@ describe('sync adaptor', function() {
       // purposely match i with increasing syndex
       var count = 0;
       for (var i = 1; i <= NUM_ITEMS; i++) {
-        var objectId = uuid()
         // because of async, need to fix value of i to function scope
         var insert = function(i) {
-          syncAdaptor.insert(type, objectId, function(err, syndex) {
+          syncAdaptor.update(type, objectId, function(err, syndex) {
             assert.ok(!err)
-            assert.equal(syndex, i)
+            assert.equal(syndex, i + 1) // syndex 1 will be taken by initial insert
             if (count++ === NUM_ITEMS - 1) done()
           })
         }
         insert(i)
       }
     })
-    it('should return err for creating on unknown type', function(done) {
-      var id = uuid()
+    it('should return err for updating on unknown type', function(done) {
       var unknownType = 'unknownType'
-      syncAdaptor.insert(unknownType, id, function(err, syndex) {
+      syncAdaptor.update(unknownType, objectId, function(err, syndex) {
         assert.ok(err)
         assert.ok(/unknown/.test(err.message))
         done()
       })
     })
+    it('should return err for updating on unknown item', function(done) {
+      var unknownId = 'unknownid'
+      syncAdaptor.update(type, unknownId, function(err, syndex) {
+        assert.ok(err)
+        assert.ok(/not found/.test(err.message))
+        done()
+      })
+    })
   })
+  describe('upsert', function() {
+    var type = 'User'
+    var objectId = uuid()
+    beforeEach(function(done) {
+      syncAdaptor.register(type, function() {
+        syncAdaptor.upsert(type, objectId, function(err, syndex) {
+          done()
+        })
+      })
+    })
+    it('should be able to update existing id', function(done) {
+      syncAdaptor.upsert(type, objectId, function(err, syndex) {
+        assert.ok(!err)
+        assert.equal(syndex, 2)
+        syncAdaptor.getSyndex(type, objectId, function(err, syndex) {
+          assert.ok(!err)
+          assert.equal(syndex, 2)
+          done()
+        })
+      })
+    })
+    it('should be able to upsert a new object of type', function(done) {
+      var objectId = uuid()
+      syncAdaptor.upsert(type, objectId, function(err, syndex) {
+        assert.ok(!err)
+        assert.equal(syndex, 2) // remember, we inserted on in the beforeEach
+        syncAdaptor.getSyndex(type, objectId, function(err, syndex) {
+          assert.ok(!err)
+          assert.equal(syndex, 2)
+          done()
+        })
+      })
+    })
+
+    it('should increase syndex each time', function(done) {
+      var NUM_ITEMS = 100
+      // purposely match i with increasing syndex
+      var count = 0;
+      for (var i = 1; i <= NUM_ITEMS; i++) {
+        // because of async, need to fix value of i to function scope
+        var insert = function(i) {
+          syncAdaptor.upsert(type, objectId, function(err, syndex) {
+            assert.ok(!err)
+            assert.equal(syndex, i + 1) // syndex 1 will be taken by initial insert
+            if (count++ === NUM_ITEMS - 1) done()
+          })
+        }
+        insert(i)
+      }
+    })
+    it('should return err for updating on unknown type', function(done) {
+      var unknownType = 'unknownType'
+      syncAdaptor.upsert(unknownType, objectId, function(err, syndex) {
+        assert.ok(err)
+        assert.ok(/unknown/.test(err.message))
+        done()
+      })
+    })
+
+  })
+
 
 })
