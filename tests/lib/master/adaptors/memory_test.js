@@ -78,4 +78,32 @@ describe('memory adaptor', function() {
       })
     })
   })
+  describe('bumpSyndex', function() {
+    it('should increase type syndex', function(done) {
+      memoryAdaptor.register(type, function(err) {
+        assert.ok(!err)
+        memoryAdaptor.bumpSyndex(type, function(err, syndex) {
+          assert.ok(!err)
+          assert.equal(1, syndex)
+          memoryAdaptor.bumpSyndex(type, function(err, syndex) {
+            assert.ok(!err)
+            assert.equal(2, syndex)
+            done()
+          })
+        })
+      })
+    })
+    it('will return null for non-existing types', function(done) {
+      var unknownType = 'unknownType'
+      memoryAdaptor.bumpSyndex(unknownType, function(err, syndex) {
+        assert.ok(!err)
+        assert.strictEqual(null, syndex)
+        memoryAdaptor.bumpSyndex(unknownType, function(err, syndex) {
+          assert.ok(!err)
+          assert.strictEqual(null, syndex)
+          done()
+        })
+      })
+    })
+  })
 })

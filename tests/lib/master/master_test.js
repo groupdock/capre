@@ -379,13 +379,16 @@ describe('master', function() {
     })
     describe('bulk', function() {
       var NUM_ITEMS = 100
-      beforeEach(function() {
+      beforeEach(function(done) {
         var count = 0
         for (var i = 0; i < NUM_ITEMS; i++) {
           var id = uuid()
-          master.insert(type, id, function(err) {
+          master.insert(type, id, function(err, success) {
             assert.ok(!err)
-            if (count++ === NUM_ITEMS) done()
+            assert.ok(success)
+            if (++count === NUM_ITEMS) {
+              done()
+            }
           })
         }
       })
@@ -437,6 +440,14 @@ describe('master', function() {
         })
         it('should have supplied id', function() {
           assert.equal(data.id, id)
+        })
+        it('should be able to be gotten and still be \'removed\'', function(done) {
+          master.get(type, data.id, function(err, item) {
+            assert.ok(!err)
+            assert.equal(item.id, data.id)
+            assert.equal(item.op, 'remove')
+            done()
+          })
         })
       })
     })
