@@ -216,6 +216,14 @@ describe('master', function() {
         })
       })
     })
+    it('should error if not supplied a type', function(done) {
+      master.update(null, function(err) {
+        assert.ok(err)
+        assert.ok(/type/.test(err.message))
+        done()
+      })
+    })
+
     it('should be able to update existing id', function(done) {
       master.update(type, id, function(err, data) {
         assert.ok(!err)
@@ -269,6 +277,13 @@ describe('master', function() {
         master.upsert(type, id, function(err) {
           done()
         })
+      })
+    })
+    it('should error if not supplied a type', function(done) {
+      master.upsert(null, function(err) {
+        assert.ok(err)
+        assert.ok(/type/.test(err.message))
+        done()
       })
     })
     it('should be able to update existing id', function(done) {
@@ -327,6 +342,13 @@ describe('master', function() {
   })
   describe('sync', function(type, syndex) {
     var type = 'User'
+    it('should error if not supplied a type', function(done) {
+      master.sync(null, function(err) {
+        assert.ok(err)
+        assert.ok(/type/.test(err.message))
+        done()
+      })
+    })
     it('should get ids > supplied index', function(done) {
       var id1 = uuid()
       master.insert(type, id1, function(err) {
@@ -336,11 +358,11 @@ describe('master', function() {
           assert.ok(!err)
           var currentSyndex = data.syndex - 1
           // we want to grab just this most recent item
-          master.sync(type, currentSyndex, function(err, items, returnedSyndex) {
+          master.sync(type, currentSyndex, function(err, items, typeInfo) {
             assert.ok(!err)
             assert.equal(items.length, 1)
-            assert.equal(data.syndex, returnedSyndex)
-            assert.equal(items[0], id2)
+            assert.equal(data.syndex, typeInfo.syndex)
+            assert.equal(items[0].id, id2)
             done()
           })
         })
@@ -372,6 +394,9 @@ describe('master', function() {
         master.sync(type, currentSyndex, function(err, items, syndex) {
           assert.ok(!err)
           assert.equal(items.length, NUM_ITEMS - currentSyndex)
+          _.every(items, function(item) {
+            return item.syndex > currentSyndex
+          })
           done()
         })
       })
@@ -384,6 +409,13 @@ describe('master', function() {
       id = uuid()
       master.insert(type, id, function(err, data) {
         assert.ok(!err)
+        done()
+      })
+    })
+    it('should error if not supplied a type', function(done) {
+      master.remove(null, function(err) {
+        assert.ok(err)
+        assert.ok(/type/.test(err.message))
         done()
       })
     })
