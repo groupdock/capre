@@ -85,51 +85,50 @@ describe('master', function() {
         done()
       })
     })
-    //it('should be able to get syndex for an id', function(done) {
-      //var id = uuid()
-      //master.insert(type, id, function(err) {
-        //assert.ok(!err)
-        //master.getSyndex(type, id, function(err, syndex) {
-          //assert.ok(!err)
-          //assert.equal(syndex, 1)
-          //done()
-        //})
-      //})
-    //})
-    //it('should return null for getting syndex of unknown id', function(done) {
-      //var nonExistingID = uuid()
-      //master.getSyndex(type, nonExistingID, function(err, syndex) {
-        //assert.ok(!err)
-        //assert.strictEqual(syndex, null)
-        //done()
-      //})
-    //})
-    //it('should return err for getting syndex of unknown type', function(done) {
-      //var nonExistingID = uuid()
-      //var unknownType = 'unknownType'
-      //master.getSyndex(unknownType, nonExistingID, function(err, syndex) {
-        //assert.ok(err)
-        //assert.ok(/unknown/.test(err.message))
-        //done()
-      //})
-    //})
+    it('should be able to get syndex for an id', function(done) {
+      var id = uuid()
+      master.insert(type, id, function(err) {
+        assert.ok(!err)
+        master.getSyndex(type, id, function(err, syndex) {
+          assert.ok(!err)
+          assert.equal(syndex, 1)
+          done()
+        })
+      })
+    })
+    it('should return null for getting syndex of unknown id', function(done) {
+      var nonExistingID = uuid()
+      master.getSyndex(type, nonExistingID, function(err, syndex) {
+        assert.ok(!err)
+        assert.strictEqual(syndex, null)
+        done()
+      })
+    })
+    it('should return err for getting syndex of unknown type', function(done) {
+      var nonExistingID = uuid()
+      var unknownType = 'unknownType'
+      master.getSyndex(unknownType, nonExistingID, function(err, syndex) {
+        assert.ok(err)
+        assert.ok(/unknown/.test(err.message))
+        done()
+      })
+    })
   })
-  //describe('get', function() {
-    //var type = 'User'
-    //it('should get data for an id', function(done) {
-      //var id = uuid()
-      //master.insert(type, id, function(err) {
-        //assert.ok(!err)
-        //master.get(type, id, function(err, data) {
-          //assert.ok(!err)
-          //assert.equal(data.id, id)
-          //assert.equal(data.syndex, 1)
-          //assert.equal(data.op, 'insert')
-          //done()
-        //})
-      //})
-    //})
-  //})
+  describe('get', function() {
+    var type = 'User'
+    it('should get data for an id', function(done) {
+      var id = uuid()
+      master.insert(type, id, function(err) {
+        assert.ok(!err)
+        master.get(type, id, function(err, data) {
+          assert.ok(!err)
+          assert.equal(data.id, id)
+          assert.equal(data.syndex, 1)
+          done()
+        })
+      })
+    })
+  })
   describe('find', function() {
     var type = 'User'
     it('can find things', function(done) {
@@ -137,7 +136,6 @@ describe('master', function() {
         var id = uuid()
         master.insert(type, id, function(err) {
           master.find(type, id, function(err, found) {
-            console.log(arguments)
             assert.ok(!err)
             assert.ok(found)
             assert.ok(found.id)
@@ -166,9 +164,6 @@ describe('master', function() {
         it('should have syndex of one', function() {
           assert.equal(data.syndex, 1)
         })
-        it('should have op of insert', function() {
-          assert.equal(data.op, 'insert')
-        })
         it('should have supplied id', function() {
           assert.equal(data.id, id)
         })
@@ -181,252 +176,251 @@ describe('master', function() {
         })
       })
     })
-    //it('should increase syndex each insert', function(done) {
-      //var NUM_ITEMS = 100
-      //// purposely match i with increasing syndex
-      //var count = 0;
-      //for (var i = 1; i <= NUM_ITEMS; i++) {
-        //var id = uuid()
-        //// because of async, need to fix value of i to function scope
-        //var insert = function(i) {
-          //master.insert(type, id, function(err, data) {
-            //assert.ok(!err)
-            //assert.equal(data.syndex, i)
-            //if (count++ === NUM_ITEMS - 1) done()
-          //})
-        //}
-        //insert(i)
-      //}
-    //})
-    //it('should return err if inserting item with existing id', function(done) {
-      //var id = uuid()
-      //master.insert(type, id, function(err, data) {
-        //master.insert(type, id, function(err, data) {
-          //assert.ok(err)
-          //assert.ok(/duplicate/.test(err.message))
-          //master.getSyndex(type, id, function(err, syndex) {
-            //assert.ok(!err)
-            //assert.equal(syndex, 1)
-            //done()
-          //})
-        //})
-      //})
-    //})
-    //it('should not return err for inserting on unknown type', function(done) {
-      //var id = uuid()
-      //var unknownType = 'unknownType'
-      //master.insert(unknownType, id, function(err, data) {
-        //assert.ok(!err)
-        //assert.equal(data.syndex, 1)
-        //master.getSyndex(unknownType, id, function(err, syndex) {
-          //assert.ok(!err)
-          //assert.equal(syndex, 1)
-          //done()
-        //})
-      //})
-    //})
+    it('should increase syndex each insert', function(done) {
+      var NUM_ITEMS = 100
+      // purposely match i with increasing syndex
+      var count = 0;
+      for (var i = 1; i <= NUM_ITEMS; i++) {
+        var id = uuid()
+        // because of async, need to fix value of i to function scope
+        var insert = function(i) {
+          master.insert(type, id, function(err, data) {
+            assert.ok(!err)
+            assert.equal(data.syndex, i)
+            if (count++ === NUM_ITEMS - 1) done()
+          })
+        }
+        insert(i)
+      }
+    })
+    it('should return err if inserting item with existing id', function(done) {
+      var id = uuid()
+      master.insert(type, id, function(err, data) {
+        master.insert(type, id, function(err, data) {
+          assert.ok(err)
+          assert.ok(/duplicate/.test(err.message))
+          master.getSyndex(type, id, function(err, syndex) {
+            assert.ok(!err)
+            assert.equal(syndex, 1)
+            done()
+          })
+        })
+      })
+    })
+    it('should not return err for inserting on unknown type', function(done) {
+      var id = uuid()
+      var unknownType = 'unknownType'
+      master.insert(unknownType, id, function(err, data) {
+        assert.ok(!err)
+        assert.equal(data.syndex, 1)
+        master.getSyndex(unknownType, id, function(err, syndex) {
+          assert.ok(!err)
+          assert.equal(syndex, 1)
+          done()
+        })
+      })
+    })
   })
-  //describe('update', function() {
-    //var type = 'User'
-    //var id = uuid()
-    //beforeEach(function(done) {
-      //master.register(type, function(err) {
-        //assert.ok(!err)
-        //master.insert(type, id, function(err) {
-          //assert.ok(!err)
-          //done()
-        //})
-      //})
-    //})
-    //it('should error if not supplied a type', function(done) {
-      //master.update(null, function(err) {
-        //assert.ok(err)
-        //assert.ok(/type/.test(err.message))
-        //done()
-      //})
-    //})
+  describe('update', function() {
+    var type = 'User'
+    var id = uuid()
+    beforeEach(function(done) {
+      master.register(type, function(err) {
+        assert.ok(!err)
+        master.insert(type, id, function(err) {
+          assert.ok(!err)
+          done()
+        })
+      })
+    })
+    it('should error if not supplied a type', function(done) {
+      master.update(null, function(err) {
+        assert.ok(err)
+        assert.ok(/type/.test(err.message))
+        done()
+      })
+    })
 
-    //it('should be able to update existing id', function(done) {
-      //master.update(type, id, function(err, data) {
-        //assert.ok(!err)
-        //assert.equal(data.syndex, 2)
-        //master.getSyndex(type, id, function(err, syndex) {
-          //assert.ok(!err)
-          //assert.equal(syndex, 2)
-          //done()
-        //})
-      //})
-    //})
-    //it('should increase syndex each time', function(done) {
-      //var NUM_ITEMS = 100
-      //// purposely match i with increasing syndex
-      //var count = 0;
-      //for (var i = 1; i <= NUM_ITEMS; i++) {
-        //// because of async, need to fix value of i to function scope
-        //var insert = function(i) {
-          //master.update(type, id, function(err, data) {
-            //assert.ok(!err)
-            //assert.equal(data.syndex, i + 1) // syndex 1 will be taken by initial insert
-            //assert.equal(data.op, 'update')
-            //if (count++ === NUM_ITEMS - 1) done()
-          //})
-        //}
-        //insert(i)
-      //}
-    //})
-    //it('should return err for updating on unknown type', function(done) {
-      //var unknownType = 'unknownType'
-      //master.update(unknownType, id, function(err) {
-        //assert.ok(err)
-        //assert.ok(/unknown/.test(err.message))
-        //done()
-      //})
-    //})
-    //it('should return err for updating on unknown item', function(done) {
-      //var unknownId = 'unknownid'
-      //master.update(type, unknownId, function(err) {
-        //assert.ok(err)
-        //assert.ok(/not found/.test(err.message))
-        //done()
-      //})
-    //})
-  //})
-  //describe('upsert', function() {
-    //var type = 'User'
-    //var id = uuid()
-    //beforeEach(function(done) {
-      //master.register(type, function() {
-        //master.upsert(type, id, function(err) {
-          //done()
-        //})
-      //})
-    //})
-    //it('should error if not supplied a type', function(done) {
-      //master.upsert(null, function(err) {
-        //assert.ok(err)
-        //assert.ok(/type/.test(err.message))
-        //done()
-      //})
-    //})
-    //it('should be able to update existing id', function(done) {
-      //master.upsert(type, id, function(err, data) {
-        //assert.ok(!err)
-        //assert.equal(data.syndex, 2)
-        //master.getSyndex(type, id, function(err, syndex) {
-          //assert.ok(!err)
-          //assert.equal(syndex, 2)
-          //done()
-        //})
-      //})
-    //})
-    //it('should be able to upsert a new object of type', function(done) {
-      //var id = uuid()
-      //master.upsert(type, id, function(err, data) {
-        //assert.ok(!err)
-        //assert.equal(data.syndex, 2) // remember, we inserted on in the beforeEach
-        //master.getSyndex(type, id, function(err, syndex) {
-          //assert.ok(!err)
-          //assert.equal(syndex, 2)
-          //done()
-        //})
-      //})
-    //})
+    it('should be able to update existing id', function(done) {
+      master.update(type, id, function(err, data) {
+        assert.ok(!err)
+        assert.equal(data.syndex, 2)
+        master.getSyndex(type, id, function(err, syndex) {
+          assert.ok(!err)
+          assert.equal(syndex, 2)
+          done()
+        })
+      })
+    })
+    it('should increase syndex each time', function(done) {
+      var NUM_ITEMS = 100
+      // purposely match i with increasing syndex
+      var count = 0;
+      for (var i = 1; i <= NUM_ITEMS; i++) {
+        // because of async, need to fix value of i to function scope
+        var insert = function(i) {
+          master.update(type, id, function(err, data) {
+            assert.ok(!err)
+            assert.equal(data.syndex, i + 1) // syndex 1 will be taken by initial insert
+            if (count++ === NUM_ITEMS - 1) done()
+          })
+        }
+        insert(i)
+      }
+    })
+    it('should return err for updating on unknown type', function(done) {
+      var unknownType = 'unknownType'
+      master.update(unknownType, id, function(err) {
+        assert.ok(err)
+        assert.ok(/unknown/.test(err.message))
+        done()
+      })
+    })
+    it('should return err for updating on unknown item', function(done) {
+      var unknownId = 'unknownid'
+      master.update(type, unknownId, function(err) {
+        assert.ok(err)
+        assert.ok(/not found/.test(err.message))
+        done()
+      })
+    })
+  })
+  describe('upsert', function() {
+    var type = 'User'
+    var id = uuid()
+    beforeEach(function(done) {
+      master.register(type, function() {
+        master.upsert(type, id, function(err) {
+          done()
+        })
+      })
+    })
+    it('should error if not supplied a type', function(done) {
+      master.upsert(null, function(err) {
+        assert.ok(err)
+        assert.ok(/type/.test(err.message))
+        done()
+      })
+    })
+    it('should be able to update existing id', function(done) {
+      master.upsert(type, id, function(err, data) {
+        assert.ok(!err)
+        assert.equal(data.syndex, 2)
+        master.getSyndex(type, id, function(err, syndex) {
+          assert.ok(!err)
+          assert.equal(syndex, 2)
+          done()
+        })
+      })
+    })
+    it('should be able to upsert a new object of type', function(done) {
+      var id = uuid()
+      master.upsert(type, id, function(err, data) {
+        assert.ok(!err)
+        assert.equal(data.syndex, 2) // remember, we inserted on in the beforeEach
+        master.getSyndex(type, id, function(err, syndex) {
+          assert.ok(!err)
+          assert.equal(syndex, 2)
+          done()
+        })
+      })
+    })
 
-    //it('should increase syndex each time', function(done) {
-      //var NUM_ITEMS = 100
-      //// purposely match i with increasing syndex
-      //var count = 0;
-      //for (var i = 1; i <= NUM_ITEMS; i++) {
-        //// because of async, need to fix value of i to function scope
-        //var insert = function(i) {
-          //master.upsert(type, id, function(err, data) {
-            //assert.ok(!err)
-            //assert.equal(data.syndex, i + 1) // syndex 1 will be taken by initial insert
-            //if (count++ === NUM_ITEMS - 1) done()
-          //})
-        //}
-        //insert(i)
-      //}
-    //})
-    //it('should not return err for upserting on unknown type', function(done) {
-      //var id = uuid()
-      //var unknownType = 'unknownType'
-      //master.upsert(unknownType, id, function(err, data) {
-        //assert.ok(!err)
-        //assert.equal(data.syndex, 1)
-        //master.getSyndex(unknownType, id, function(err, syndex) {
-          //assert.ok(!err)
-          //assert.equal(syndex, 1)
-          //done()
-        //})
-      //})
-    //})
-  //})
-  //describe('sync', function(type, syndex) {
-    //var type = 'User'
-    //it('should error if not supplied a type', function(done) {
-      //master.sync(null, function(err) {
-        //assert.ok(err)
-        //assert.ok(/type/.test(err.message))
-        //done()
-      //})
-    //})
-    //it('should get ids > supplied index', function(done) {
-      //var id1 = uuid()
-      //master.insert(type, id1, function(err) {
-        //assert.ok(!err)
-        //var id2 = uuid()
-        //master.insert(type, id2, function(err, data) {
-          //assert.ok(!err)
-          //var currentSyndex = data.syndex - 1
-          //// we want to grab just this most recent item
-          //master.sync(type, currentSyndex, function(err, items, typeInfo) {
-            //assert.ok(!err)
-            //assert.equal(items.length, 1)
-            //assert.equal(data.syndex, typeInfo.syndex)
-            //assert.equal(items[0].id, id2)
-            //done()
-          //})
-        //})
-      //})
-    //})
-    //it('shouldn\'t err for unknown types, just return no items', function(done) {
-      //var currentSyndex = 12
-      //var unknownType = 'unknownType'
-      //master.sync(unknownType, currentSyndex, function(err, items, syndex) {
-        //assert.ok(!err)
-        //assert.equal(items.length, 0)
-        //done()
-      //})
-    //})
-    //describe('bulk', function() {
-      //var NUM_ITEMS = 100
-      //beforeEach(function(done) {
-        //var count = 0
-        //for (var i = 0; i < NUM_ITEMS; i++) {
-          //var id = uuid()
-          //master.insert(type, id, function(err, success) {
-            //assert.ok(!err)
-            //assert.ok(success)
-            //if (++count === NUM_ITEMS) {
-              //done()
-            //}
-          //})
-        //}
-      //})
-      //it('should get all ids > supplied index', function(done) {
-        //var currentSyndex = 12
-        //master.sync(type, currentSyndex, function(err, items, syndex) {
-          //assert.ok(!err)
-          //assert.equal(items.length, NUM_ITEMS - currentSyndex)
-          //_.every(items, function(item) {
-            //return item.syndex > currentSyndex
-          //})
-          //done()
-        //})
-      //})
-    //})
-  //})
+    it('should increase syndex each time', function(done) {
+      var NUM_ITEMS = 100
+      // purposely match i with increasing syndex
+      var count = 0;
+      for (var i = 1; i <= NUM_ITEMS; i++) {
+        // because of async, need to fix value of i to function scope
+        var insert = function(i) {
+          master.upsert(type, id, function(err, data) {
+            assert.ok(!err)
+            assert.equal(data.syndex, i + 1) // syndex 1 will be taken by initial insert
+            if (count++ === NUM_ITEMS - 1) done()
+          })
+        }
+        insert(i)
+      }
+    })
+    it('should not return err for upserting on unknown type', function(done) {
+      var id = uuid()
+      var unknownType = 'unknownType'
+      master.upsert(unknownType, id, function(err, data) {
+        assert.ok(!err)
+        assert.equal(data.syndex, 1)
+        master.getSyndex(unknownType, id, function(err, syndex) {
+          assert.ok(!err)
+          assert.equal(syndex, 1)
+          done()
+        })
+      })
+    })
+  })
+  describe('sync', function(type, syndex) {
+    var type = 'User'
+    it('should error if not supplied a type', function(done) {
+      master.sync(null, function(err) {
+        assert.ok(err)
+        assert.ok(/type/.test(err.message))
+        done()
+      })
+    })
+    it('should get ids > supplied index', function(done) {
+      var id1 = uuid()
+      master.insert(type, id1, function(err) {
+        assert.ok(!err)
+        var id2 = uuid()
+        master.insert(type, id2, function(err, data) {
+          assert.ok(!err)
+          var currentSyndex = data.syndex - 1
+          // we want to grab just this most recent item
+          master.sync(type, currentSyndex, function(err, items, typeInfo) {
+            assert.ok(!err)
+            assert.equal(items.length, 1)
+            assert.equal(data.syndex, typeInfo.syndex)
+            assert.equal(items[0].id, id2)
+            done()
+          })
+        })
+      })
+    })
+    it('shouldn\'t err for unknown types, just return no items', function(done) {
+      var currentSyndex = 12
+      var unknownType = 'unknownType'
+      master.sync(unknownType, currentSyndex, function(err, items, syndex) {
+        assert.ok(!err)
+        assert.equal(items.length, 0)
+        done()
+      })
+    })
+    describe('bulk', function() {
+      var NUM_ITEMS = 100
+      beforeEach(function(done) {
+        var count = 0
+        for (var i = 0; i < NUM_ITEMS; i++) {
+          var id = uuid()
+          master.insert(type, id, function(err, success) {
+            assert.ok(!err)
+            assert.ok(success)
+            if (++count === NUM_ITEMS) {
+              done()
+            }
+          })
+        }
+      })
+      it('should get all ids > supplied index', function(done) {
+        var currentSyndex = 12
+        master.sync(type, currentSyndex, function(err, items, syndex) {
+          assert.ok(!err)
+          assert.equal(items.length, NUM_ITEMS - currentSyndex)
+          _.every(items, function(item) {
+            return item.syndex > currentSyndex
+          })
+          done()
+        })
+      })
+    })
+  })
   //describe('remove', function() {
     //var type = 'User'
     //var id
@@ -457,9 +451,6 @@ describe('master', function() {
         //it('should have syndex of two', function() {
           //assert.equal(data.syndex, 2)
         //})
-        //it('should have op of remove', function() {
-          //assert.equal(data.op, 'remove')
-        //})
         //it('should have supplied id', function() {
           //assert.equal(data.id, id)
         //})
@@ -467,7 +458,6 @@ describe('master', function() {
           //master.get(type, data.id, function(err, item) {
             //assert.ok(!err)
             //assert.equal(item.id, data.id)
-            //assert.equal(item.op, 'remove')
             //done()
           //})
         //})
