@@ -262,6 +262,71 @@ exports.shouldBehaveLikeACapreAdaptor = function(){
       })
     })
   })
+  describe('setSyndex', function() {
+    var type = 'User'
+    beforeEach(function(done) {
+      capre.register(type, done)
+    })
+
+    it('sets the syndex for a type', function(done) {
+      var newSyndex = 7
+      capre.setSyndex(type, newSyndex, function(err, syndex) {
+        assert.ok(!err)
+        assert.equal(syndex, newSyndex)
+        newSyndex = 16
+        capre.setSyndex(type, newSyndex, function(err, syndex) {
+          assert.ok(!err)
+          assert.equal(syndex, newSyndex)
+          capre.getSyndex(type, function(err, syndex) {
+            assert.ok(!err)
+            assert.equal(syndex, newSyndex)
+            done()
+          })
+        })
+      })
+    })
+
+    it('sets different types independently', function(done) {
+      var anotherType = 'anotherType'
+      var newSyndex = 7
+      capre.register(anotherType, function() {
+        capre.setSyndex(type, newSyndex, function(err, syndex) {
+          assert.ok(!err)
+          assert.equal(syndex, newSyndex)
+          newSyndex = 4
+          capre.setSyndex(anotherType, newSyndex, function(err, syndex) {
+            assert.ok(!err)
+            assert.equal(syndex, 4)
+            done()
+          })
+        })
+      })
+    })
+     it('produces error if setting the syndex to a lower value', function(done) {
+      var newSyndex = 7
+      capre.setSyndex(type, newSyndex, function(err, syndex) {
+        assert.ok(!err)
+        assert.equal(syndex, newSyndex)
+        newSyndex = 3
+        capre.setSyndex(type, newSyndex, function(err, syndex) {
+          assert.ok(err)
+          assert.ok(/lower/.test(err))
+          done()
+        })
+      })
+    })
+
+    it('produces error if the type is unknown', function(done) {
+      var unknownType = 'unknownType'
+      var newSyndex = 7
+      capre.setSyndex(unknownType, newSyndex, function(err, syndex) {
+        assert.ok(err)
+        assert.ok(/unknown/.test(err.message))
+        done()
+      })
+    })
+
+  })
   describe('insert', function() {
     var type = 'User'
     beforeEach(function(done) {
