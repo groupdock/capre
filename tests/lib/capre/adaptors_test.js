@@ -14,10 +14,8 @@ exports.shouldBehaveLikeACapreAdaptor = function(){
   var capre, backend
   var NUM_ITEMS = 20
 
-  before(function(done) {
-    var backend = new this.backend(function() {
-      capre = new Capre(backend, done)
-    })
+  before(function() {
+    capre = this.capre
   })
   beforeEach(function(done) {
     capre.flush(done)
@@ -399,19 +397,24 @@ exports.shouldBehaveLikeACapreAdaptor = function(){
       })
     })
     it('should increase syndex each time', function(done) {
-      // purposely match i with increasing syndex
-      var count = 0;
-      for (var i = 1; i <= NUM_ITEMS; i++) {
-        // because of async, need to fix value of i to function scope
-        var insert = function(i) {
-          capre.update(type, id, function(err, data) {
+      // update bunch of items
+      var update = function(i) {
+        capre.update(type, id, function(err, data) {
+          assert.ok(!err) 
+          assert.ok(data)
+          assert.equal(data.syndex, i + 1)
+          capre.getSyndex(type, id, function(err, syndex) {
             assert.ok(!err)
-            assert.equal(data.syndex, i + 1) // syndex 1 will be taken by initial insert
-            if (count++ === NUM_ITEMS - 1) done()
+            assert.equal(syndex, data.syndex)
+            if (i < NUM_ITEMS) { 
+              update(++i)
+            } else {
+              done()
+            }
           })
-        }
-        insert(i)
+        })
       }
+      update(1)
     })
     it('should return err for updating on unknown type', function(done) {
       var unknownType = 'unknownType'
@@ -476,18 +479,25 @@ exports.shouldBehaveLikeACapreAdaptor = function(){
     })
     it('should increase syndex each upsert', function(done) {
       // purposely match i with increasing syndex
-      var count = 0;
-      for (var i = 0; i < NUM_ITEMS; i++) {
-        // because of async, need to fix value of i to function scope
-        var insert = function(i) {
-          capre.upsert(type, id, function(err, data) {
+      var i = 0;
+      var upsert = function(i) {
+        var id = uuid()
+        capre.upsert(type, id, function(err, data) {
+          assert.ok(!err)
+          assert.ok(data)
+          assert.equal(data.syndex, i + 1)
+          capre.getSyndex(type, id, function(err, syndex) {
             assert.ok(!err)
-            assert.equal(data.syndex, i + 1) // syndex 1 will be taken by initial insert
-            if (i === NUM_ITEMS - 1) done()
+            assert.equal(syndex, data.syndex)
+            if (i < NUM_ITEMS) { 
+              upsert(++i)
+            } else {
+              done()
+            }
           })
-        }
-        insert(i)
+        })
       }
+      upsert(i)
     })
     it('will create type if unknown', function(done) {
       var id = uuid()
