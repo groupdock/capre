@@ -247,8 +247,15 @@ exports.shouldBehaveLikeACapreAdaptor = function(){
           assert.equal(syndex, 1)
           capre.bumpSyndex(anotherType, function(err, syndex) {
             assert.ok(!err)
-            assert.equal(syndex, 1)
-            done()
+            capre.getSyndex(anotherType, function(err, syndex) {
+              assert.ok(!err)
+              assert.equal(syndex, 1)
+              capre.getSyndex(type, function(err, syndex) {
+                assert.ok(!err)
+                assert.equal(syndex, 1)
+                done()
+              })
+            })
           })
         })
       })
