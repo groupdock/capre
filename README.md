@@ -74,7 +74,6 @@ User.post('save', function() {
 
 ```
 
-
 ### What is 'Capre'
 
 It means 'Goats' in Latin. Goats. 
