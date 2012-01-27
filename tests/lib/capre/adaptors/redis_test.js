@@ -6,7 +6,7 @@ var redis = require('redis')
 var assert = require('assert')
 var client = redis.createClient()
 
-var MasterRedisAdaptor = require('../../../../lib/master/adaptors/redis')
+var MasterRedisAdaptor = require('../../../../lib/capre/adaptors/redis')
 
 describe('redis adaptor', function() {
   before(function(done) {
