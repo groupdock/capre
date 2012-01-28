@@ -6,9 +6,9 @@ var fs = require('fs')
 var JSONAdaptor = require('../../../../lib/capre/adaptors/json')
 
 describe('json adaptor', function() {
-  var adaptor
-  var PATH = 'tests/tmp/slave.json'
+  var adaptor, PATH
   var type = 'User'
+  var PATH = 'tests/tmp/slave.json'
   before(function(done) {
     mkdirp(path.dirname(PATH), done)
   })
@@ -22,7 +22,15 @@ describe('json adaptor', function() {
       adaptor = new JSONAdaptor(PATH, done)
     })
     after(function(done) {
-      fs.unlink(path.join(PATH), done)
+      if (!adaptor._path || !path.existsSync(adaptor._path)) return done()
+      fs.unlink(adaptor._path, function(err) {
+        // don't care about not found erros
+        if (err && err.code != 'ENOENT') {
+          done(err)
+        } else {
+          done()
+        }
+      })
     })
     it('saves a register', function(done) {
       adaptor.register(type, function(err) {
@@ -44,6 +52,15 @@ describe('json adaptor', function() {
           assert.equal(types[0], type)
           done()
         })
+      })
+    })
+    it('sets default path', function(done) {
+      adaptor = new JSONAdaptor(function(err) {
+        assert.ok(!err)
+        assert.ok(adaptor._path)
+        assert.equal(path.normalize(adaptor._path), path.join(process.cwd(), 'slave.json'))
+        PATH = adaptor._path
+        done()
       })
     })
   })
