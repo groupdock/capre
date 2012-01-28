@@ -1,8 +1,8 @@
 'use strict'
 var Server = require('../../../lib/server/')
 var assert = require('assert')
-
 var enode = require('enode')
+var mockery = require('mockery')
 
 var isPortTaken = function(port, callback) {
   var net = require('net')
@@ -58,7 +58,7 @@ describe('server', function() {
       })
     })
   })
-  describe('should take various backends', function() {
+  describe('support for various backends, including', function() {
     var MemoryBackend = require('../../../lib/capre/adaptors/memory')
     var JSONBackend = require('../../../lib/capre/adaptors/json')
     var RedisBackend = require('../../../lib/capre/adaptors/redis')
@@ -78,6 +78,47 @@ describe('server', function() {
     it('redis', function() {
       var server = new Server('redis')
       assert.ok(server.backend instanceof RedisBackend)
+    })
+    describe('passing options to various backends', function() {
+      before(function() {
+        mockery.enable()    
+      })
+      after(function() {
+        mockery.disable()    
+      })
+      it('memory', function(done) {
+        var options = {}
+        mockery.registerMock('../capre/adaptors/memory', function(passedOptions, callback) {
+          assert.deepEqual(passedOptions, options)
+          server = null // cleanup
+          done()
+        })
+        var server = new Server('memory', options)
+      })
+      it('json', function(done) {
+        var PATH = 'tests/tmp/slave.json'
+        var options = {
+          file: PATH
+        }
+        mockery.registerMock('../capre/adaptors/json', 
+                             function(passedOptions, callback) {
+          assert.deepEqual(passedOptions, options)
+          server = null // cleanup
+          done()
+        })
+        var server = new Server('json', options)
+      })
+      it('redis', function(done) {
+        var options = {}
+        mockery.registerMock('../capre/adaptors/redis', 
+                             function(passedOptions, callback) {
+          assert.deepEqual(passedOptions, options)
+          server = null // cleanup
+          done()
+        })
+
+        var server = new Server('redis', options)
+      })
     })
   })
 })

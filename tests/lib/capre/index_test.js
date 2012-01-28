@@ -34,7 +34,10 @@ describe('capre', function() {
     before(function(done){
       var self = this
       mkdirp(path.dirname(PATH), function() {
-        var backend = new CapreJSONAdaptor(PATH, function() {
+        var options = {
+          path: PATH
+        }
+        var backend = new CapreJSONAdaptor(options, function() {
           self.capre = new Capre(backend, done)
         })
       })
