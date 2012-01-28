@@ -40,17 +40,32 @@ describe('json adaptor', function() {
         done()
       })
     })
-    it('saves a flush', function() {
-      
+    it('saves a flush', function(done) {
+      adaptor.register(type, function(err) {
+        assert.ok(!err)
+        adaptor.flush(function(err) {
+          assert.ok(!err)
+          adaptor = new JSONAdaptor(PATH, function(err) {
+            assert.ok(!err)
+            adaptor.getTypes(function(err, types) {
+              assert.ok(!err)
+              assert.equal(types.length, 0)
+              done()
+            })
+          })
+        })
+      })
     })
     it('can load data', function(done) {
-      adaptor = new JSONAdaptor(PATH, function(err) {
-        assert.ok(!err)
-        adaptor.getTypes(function(err, types) {
+      adaptor.register(type, function(err) {
+        adaptor = new JSONAdaptor(PATH, function(err) {
           assert.ok(!err)
-          assert.equal(types.length, 1)
-          assert.equal(types[0], type)
-          done()
+          adaptor.getTypes(function(err, types) {
+            assert.ok(!err)
+            assert.equal(types.length, 1)
+            assert.equal(types[0], type)
+            done()
+          })
         })
       })
     })
