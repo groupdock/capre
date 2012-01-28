@@ -9,7 +9,6 @@ var CapreRedisAdaptor = require('../../../lib/capre/adaptors/redis')
 var CapreMemoryAdaptor = require('../../../lib/capre/adaptors/memory')
 var redis = require("redis")
 
-
 exports.shouldBehaveLikeACapreAdaptor = function(){
   var capre, backend
   var NUM_ITEMS = 20
