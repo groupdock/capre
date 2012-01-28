@@ -8,7 +8,7 @@
   },
   "main": "index.js",
   "scripts": {
-    "test": "mocha tests/*"
+    "test": "mocha --globals capre -R spec  tests/lib/capre/adaptors/* tests/lib/capre/index_test.js tests/lib/server/index_test.js"
   },
   "engines": {
     "node": "~0.6.7"
