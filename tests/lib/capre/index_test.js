@@ -40,7 +40,13 @@ describe('capre', function() {
       })
     })
     after(function(done) {
-      fs.unlink(path.join(PATH), done)
+      fs.unlink(path.join(PATH), function(err) {
+        if (err && err.code != 'ENOENT') {
+          done(err)
+        } else {
+          done()
+        }
+      })
     })
 
     shared.shouldBehaveLikeACapreAdaptor()
