@@ -52,8 +52,22 @@ describe('server', function() {
             remote.getSyndex('User', function(err, syndex) {
               assert.equal(syndex, 1)
               done()
-            })           
+            })
           })
+        })
+      })
+    })
+    it('should send string versions of errors', function(done) {
+       var client = new enode.Client().connect(PORT)
+      client.once('ready', function(remote) {
+        // should produce error
+        var unknownType = 'lorem'
+        remote.getSyndex(unknownType, function(err) {
+          console.log(arguments)
+          assert.ok(err)
+          assert.equal(err, 'Error: unknown type: lorem')
+          assert.ok(typeof err === 'string')
+          done()
         })
       })
     })
