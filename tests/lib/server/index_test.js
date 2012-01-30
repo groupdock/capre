@@ -1,4 +1,5 @@
 'use strict'
+
 var Server = require('../../../lib/server/')
 var assert = require('assert')
 var enode = require('enode')
