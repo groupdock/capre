@@ -8,7 +8,7 @@
   },
   "main": "index.js",
   "scripts": {
-    "test": "mocha --globals capre -R spec  tests/lib/capre/adaptors/* tests/lib/capre/index_test.js tests/lib/server/index_test.js"
+    "test": "mocha --globals capre -R spec  tests/lib/capre/adaptors/* tests/lib/capre/index_test.js tests/lib/server/index_test.js ./tests/bin/capre_test.js"
   },
   "engines": {
     "node": "~0.6.7"
@@ -21,7 +21,7 @@
     "commander": "~0.5.2",
     "pkginfo": "~0.2.3",
     "mkdirp": "~0.3.0",
-    "enode": "~0.1.0",
+    "enode": "~0.1.1",
     "winston": "~0.5.9"
   },
   "devDependencies": {

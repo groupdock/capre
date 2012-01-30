@@ -1,0 +1,48 @@
+#!/usr/bin/env node
+
+var pkginfo = require('pkginfo')(module, 'version');
+var program = require('commander')
+var path = require('path')
+var defaultJSONFile = path.join(process.cwd(), 'slave.json')
+var winston = require('winston')
+program
+  .version(module.exports.version)
+  .option('-p, --port <port>', 'specify the port to listen on [3000]', Number, 3000)
+  .option('-b, --backend <backend>', 'specify the backend [redis]', String, 'redis')
+  .option('-v, --verbose', 'verbose output')
+  .option('--file <filepath>', 'file to store data in (JSON backend only)', String, defaultJSONFile)
+  .option('--redis-host <host>', 'redis host to connect to (Redis backend only)', String, undefined)
+  .option('--redis-port <port>', 'redis port to connect to (Redis backend only)', String, undefined)
+  .option('--backends', 'list available backends')
+
+program.name = 'capre'
+
+program.on('backends', function(){
+  console.log();
+  console.log('    memory - in-memory backend. No persistence. For testing purposes only');
+  console.log('    redis - redis backend.');
+  console.log();
+  process.exit();
+})
+
+program.parse(process.argv)
+winston.remove(winston.transports.Console)
+var level = program.verbose? 'verbose' : 'info'
+winston.add(winston.transports.Console, {
+  level: level,
+  colorize: true,
+  timestame: true
+})
+
+winston.cli()
+var Server = require('../lib/server/')
+var options = {}
+options.file = program.file
+options.host = program.redisHost
+options.port = program.redisPort
+
+var master = new Server(program.backend, options).listen(program.port, function() {
+  winston.info('Capre Server Started.')
+  winston.info('Using '+ program.backend +' backend, listening on port ' + program.port)
+})
+
