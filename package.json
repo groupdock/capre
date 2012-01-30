@@ -10,6 +10,7 @@
   "scripts": {
     "test": "mocha --globals capre -R spec  tests/lib/capre/adaptors/* tests/lib/capre/index_test.js tests/lib/server/index_test.js ./tests/bin/capre_test.js"
   },
+  "bin": { "capre": "./bin/capre" },
   "engines": {
     "node": "~0.6.7"
   },
