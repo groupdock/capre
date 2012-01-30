@@ -95,10 +95,10 @@ describe('server', function() {
     })
     describe('passing options to various backends', function() {
       before(function() {
-        mockery.enable()    
+        mockery.enable()
       })
       after(function() {
-        mockery.disable()    
+        mockery.disable()
       })
       it('memory', function(done) {
         var options = {}
@@ -130,7 +130,6 @@ describe('server', function() {
           server = null // cleanup
           done()
         })
-
         var server = new Server('redis', options)
       })
     })
