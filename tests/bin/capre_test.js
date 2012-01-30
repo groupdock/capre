@@ -4,7 +4,7 @@ var exec = require('child_process').exec
 
 var enode = require('enode')
 var assert = require('assert')
-var shared = require('../lib/capre/adaptors_test')
+var shared = require('../lib/capre/adaptor_behaviour')
 
 describe('capre server executable', function() {
   var PORT = 3000

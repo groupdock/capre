@@ -4,7 +4,7 @@ var exec = require('child_process').exec
 var assert = require('assert')
 
 var Master = require('../../../lib/master')
-var shared = require('../capre/adaptors_test')
+var shared = require('../capre/adaptor_behaviour')
 
 describe('master', function() {
   var server

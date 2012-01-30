@@ -6,7 +6,7 @@ var CapreJSONAdaptor = require('../../../lib/capre/adaptors/json')
 
 var Capre = require('../../../lib/capre/')
 
-var shared = require('./adaptors_test')
+var shared = require('./adaptor_behaviour')
 
 describe('capre', function() {
   describe('memory adaptor', function() {
