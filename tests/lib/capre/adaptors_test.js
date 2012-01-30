@@ -59,7 +59,7 @@ exports.shouldBehaveLikeACapreAdaptor = function(){
       capre.register(type, function(err, syndex) {
         capre.register(type, function(err, syndex) {
           assert.ok(err)
-          assert.ok(/exists/.test(err.message))
+          assert.ok(/exists/.test(err.toString()))
           done()
         })
       })
@@ -153,7 +153,7 @@ exports.shouldBehaveLikeACapreAdaptor = function(){
       var unknownType = 'unknownType'
       capre.getSyndex(unknownType, function(err, syndex) {
         assert.ok(err)
-        assert.ok(/unknown/.test(err.message))
+        assert.ok(/unknown/.test(err.toString()))
         done()
       })
     })
@@ -181,7 +181,7 @@ exports.shouldBehaveLikeACapreAdaptor = function(){
       var unknownType = 'unknownType'
       capre.getSyndex(unknownType, nonExistingID, function(err, syndex) {
         assert.ok(err)
-        assert.ok(/unknown/.test(err.message))
+        assert.ok(/unknown/.test(err.toString()))
         done()
       })
     })
@@ -263,7 +263,7 @@ exports.shouldBehaveLikeACapreAdaptor = function(){
       var unknownType = 'unknownType'
       capre.bumpSyndex(unknownType, function(err, syndex) {
         assert.ok(err)
-        assert.ok(/unknown/.test(err.message))
+        assert.ok(/unknown/.test(err.toString()))
         done()
       })
     })
@@ -327,7 +327,7 @@ exports.shouldBehaveLikeACapreAdaptor = function(){
       var newSyndex = 7
       capre.setSyndex(unknownType, newSyndex, function(err, syndex) {
         assert.ok(err)
-        assert.ok(/unknown/.test(err.message))
+        assert.ok(/unknown/.test(err.toString()))
         done()
       })
     })
@@ -366,7 +366,6 @@ exports.shouldBehaveLikeACapreAdaptor = function(){
       })
     })
     it('should increase syndex', function(done) {
-      var bumped = sinon.spy(capre, 'bumpSyndex')
       var id = uuid()
       capre.insert(type, id, function(err, item) {
         assert.ok(!err)
@@ -376,8 +375,6 @@ exports.shouldBehaveLikeACapreAdaptor = function(){
           id = uuid()
           capre.insert(type, id, function(err, item) {
             assert.ok(!err)
-            assert.ok(bumped.calledThrice)
-            assert.ok(bumped.alwaysCalledWith(type))
             assert.ok(item)
             assert.equal(item.syndex, 3)
             done()
@@ -413,7 +410,7 @@ exports.shouldBehaveLikeACapreAdaptor = function(){
       capre.insert(type, id, function(err, data) {
         capre.insert(type, id, function(err, data) {
           assert.ok(err)
-          assert.ok(/duplicate/.test(err.message))
+          assert.ok(/duplicate/.test(err.toString()))
           capre.getSyndex(type, id, function(err, syndex) {
             assert.ok(!err)
             assert.equal(syndex, 1)
@@ -451,7 +448,7 @@ exports.shouldBehaveLikeACapreAdaptor = function(){
     it('should error if not supplied a type', function(done) {
       capre.update(null, function(err) {
         assert.ok(err)
-        assert.ok(/type/.test(err.message))
+        assert.ok(/type/.test(err.toString()))
         done()
       })
     })
@@ -491,7 +488,7 @@ exports.shouldBehaveLikeACapreAdaptor = function(){
       var unknownType = 'unknownType'
       capre.update(unknownType, id, function(err) {
         assert.ok(err)
-        assert.ok(/unknown/.test(err.message))
+        assert.ok(/unknown/.test(err.toString()))
         done()
       })
     })
@@ -499,7 +496,7 @@ exports.shouldBehaveLikeACapreAdaptor = function(){
       var unknownId = 'unknownid'
       capre.update(type, unknownId, function(err) {
         assert.ok(err)
-        assert.ok(/not found/.test(err.message))
+        assert.ok(/not found/.test(err.toString()))
         done()
       })
     })
@@ -515,7 +512,7 @@ exports.shouldBehaveLikeACapreAdaptor = function(){
     it('should error if not supplied a type', function(done) {
       capre.upsert(null, function(err) {
         assert.ok(err)
-        assert.ok(/type/.test(err.message))
+        assert.ok(/type/.test(err.toString()))
         done()
       })
     })
@@ -601,7 +598,7 @@ exports.shouldBehaveLikeACapreAdaptor = function(){
     it('should error if not supplied a type', function(done) {
       capre.sync(null, function(err) {
         assert.ok(err)
-        assert.ok(/type/.test(err.message))
+        assert.ok(/type/.test(err.toString()))
         done()
       })
     })
@@ -673,7 +670,7 @@ exports.shouldBehaveLikeACapreAdaptor = function(){
     it('should error if not supplied a type', function(done) {
       capre.remove(null, function(err) {
         assert.ok(err)
-        assert.ok(/type/.test(err.message))
+        assert.ok(/type/.test(err.toString()))
         done()
       })
     })
@@ -706,7 +703,7 @@ exports.shouldBehaveLikeACapreAdaptor = function(){
       var unknownId = 'unknownid'
       capre.remove(type, unknownId, function(err) {
         assert.ok(err)
-        assert.ok(/not found/.test(err.message))
+        assert.ok(/not found/.test(err.toString()))
         done()
       })
     })
@@ -714,7 +711,7 @@ exports.shouldBehaveLikeACapreAdaptor = function(){
       var unknownType = 'unknownType'
       capre.remove(unknownType, id, function(err) {
         assert.ok(err)
-        assert.ok(/unknown/.test(err.message))
+        assert.ok(/unknown/.test(err.toString()))
         done()
       })
     })
