@@ -1,3 +1,5 @@
+'use strict'
+
 var _ = require('underscore')
 var assert = require('assert')
 var uuid = require('node-uuid')

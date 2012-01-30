@@ -1,3 +1,5 @@
+'use strict'
+
 var CapreRedisAdaptor = require('../../../lib/capre/adaptors/redis')
 var CapreMemoryAdaptor = require('../../../lib/capre/adaptors/memory')
 var CapreJSONAdaptor = require('../../../lib/capre/adaptors/json')
