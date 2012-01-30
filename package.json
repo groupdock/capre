@@ -21,7 +21,7 @@
     "commander": "~0.5.2",
     "pkginfo": "~0.2.3",
     "mkdirp": "~0.3.0",
-    "enode": "~0.0.3",
+    "enode": "~0.1.0",
     "winston": "~0.5.9"
   },
   "devDependencies": {

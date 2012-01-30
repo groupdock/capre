@@ -63,7 +63,6 @@ describe('server', function() {
         // should produce error
         var unknownType = 'lorem'
         remote.getSyndex(unknownType, function(err) {
-          console.log(arguments)
           assert.ok(err)
           assert.equal(err, 'Error: unknown type: lorem')
           assert.ok(typeof err === 'string')
