@@ -38,8 +38,8 @@ describe('base', function() {
     it('can listen on a port', function(done) {
       base.listen(3000, function(err) {
         assert.ok(!err)
-        assert.ok(base.flush)
-        assert.ok(base.register)
+        assert.ok(base.capre.flush)
+        assert.ok(base.capre.register)
         assert.ok(base._backend)
         done()
       })
@@ -50,7 +50,7 @@ describe('base', function() {
         var self = this
         base.listen(3000, function(err) {
           assert.ok(!err)
-          self.capre = base
+          self.capre = base.capre
           done()
         })
       })
@@ -73,15 +73,15 @@ describe('base', function() {
       it('should be able to connect to running capre server', function(done) {
         base.connect(3000, function(err) {
           assert.ok(!err)
-          assert.ok(base.flush)
-          assert.ok(base.register)
+          assert.ok(base.capre.flush)
+          assert.ok(base.capre.register)
           assert.ok(base._backend)
           done()
         })
       })
       describe('api', function() {
         before(function() {
-          this.capre = base
+          this.capre = base.capre
         })
         shared.shouldBehaveLikeACapreAdaptor()
       })
