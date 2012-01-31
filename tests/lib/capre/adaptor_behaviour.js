@@ -159,6 +159,13 @@ exports.shouldBehaveLikeACapreAdaptor = function(){
         done()
       })
     })
+    it('should error if providing no type', function(done) {
+      capre.getSyndex(function(err, syndex) {
+        assert.ok(err)
+        assert.ok(/required/.test(err.toString()))
+        done()
+      })
+    })
     it('should be able to get syndex for an id', function(done) {
       var id = uuid()
       capre.insert(type, id, function(err) {
