@@ -22,6 +22,7 @@ function generateItems(master, type, count, callback) {
 
 describe('slave', function() {
   var PORT = 5000
+  var NUM_ITEMS = 5000
   var master, slave
 
   before(function(done) {
@@ -83,30 +84,30 @@ describe('slave', function() {
         })
       })
       it('can sync multiple items from start', function(done) {
-        generateItems(master, type, 10, function(err, generatedItems) {
+        generateItems(master, type, NUM_ITEMS, function(err, generatedItems) {
           assert.ok(!err)
           slave.sync(type, function(err, items, syndex) {
             assert.ok(!err)
-            assert.equal(items.length, 10)
-            assert.equal(syndex, 10)
-            assert.equal(items.length, 10)
+            assert.equal(items.length, NUM_ITEMS)
+            assert.equal(syndex, NUM_ITEMS)
+            assert.equal(items.length, NUM_ITEMS)
             assert.equal(_.difference(items, generatedItems).length, 0)
             done()
           })
         })
       })
       it('can sync multiple times after master updated', function(done) {
-        generateItems(master, type, 10, function(err) {
+        generateItems(master, type, NUM_ITEMS, function(err) {
           assert.ok(!err)
           slave.sync(type, function(err, items, syndex) {
             assert.ok(!err)
-            assert.equal(syndex, 10)
-            assert.equal(items.length, 10)
-            generateItems(master, type, 10, function(err) {
+            assert.equal(syndex, NUM_ITEMS)
+            assert.equal(items.length, NUM_ITEMS)
+            generateItems(master, type, NUM_ITEMS, function(err) {
               assert.ok(!err)
               slave.sync(type, function(err, items, syndex) {
-                assert.equal(syndex, 20)
-                assert.equal(items.length, 10)
+                assert.equal(syndex, NUM_ITEMS * 2)
+                assert.equal(items.length, NUM_ITEMS)
                 done()
               })
             })
@@ -115,14 +116,14 @@ describe('slave', function() {
       })
       describe('setSyndex', function() {
         it('will only sync items higher than setSyndex', function(done) {
-          generateItems(master, type, 10, function(err) {
+          generateItems(master, type, NUM_ITEMS, function(err) {
             assert.ok(!err)
-            slave.setSyndex(type, 5, function(err) {
+            slave.setSyndex(type, NUM_ITEMS / 2, function(err) {
               assert.ok(!err)
               slave.sync(type, function(err, items, syndex) {
                 assert.ok(!err)
-                assert.equal(syndex, 10)
-                assert.equal(items.length, 5)
+                assert.equal(syndex, NUM_ITEMS)
+                assert.equal(items.length, NUM_ITEMS / 2)
                 done()
               })
             })
