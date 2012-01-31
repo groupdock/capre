@@ -22,7 +22,7 @@ function generateItems(master, type, count, callback) {
 
 describe('slave', function() {
   var PORT = 5000
-  var NUM_ITEMS = 5000
+  var NUM_ITEMS = 2000
   var master, slave
 
   before(function(done) {
