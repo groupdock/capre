@@ -26,7 +26,7 @@ describe('slave', function() {
   var master, slave
 
   before(function(done) {
-    master = new Master('memory').listen(PORT, done)
+    master = new Master('redis').listen(PORT, done)
   })
   describe('connection', function() {
     afterEach(function(done) {
