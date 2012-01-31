@@ -34,42 +34,11 @@ then use these ids to query the master application for the actual data.
 
 Later, some new users are created in the HR system, and these ids are
 marked as changed in Capre. The next time the slave system connects to
-the master, the slave exchanges the 
+the master, the slave exchanges some data and then the README was over.
 
+# TODO
 
-In any system,
-
-##Usage
-
-Start a capre server from command prompt (default backend is redis):
-
-```
-> capre 
-Running new Capre server on port: 3000
-Using redis adaptor.
-```
-
-Create a new master in your application:
-
-```
-var Master = require('capre').master
-
-// tell capre what port to connect on and what type we want to use
-var userMaster = new Master(3000).use('User')
-
-userMaster.on('ready', function() {
-  // ready to go
-})
-
-// ...in User model:
-
-// Capre keeps a global cache of types
-var userMaster = require('capre').type.User.master
-
-User.post('save', function() {
-  // tell capre there's a new/updated user
-  userMaster.mark(user.id)
-})
+* README
 
 
 ```
