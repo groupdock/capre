@@ -3,8 +3,7 @@
 var exec = require('child_process').exec
 var assert = require('assert')
 
-var Base = require('../../../lib/master/base')
-
+var Base = require('../../../lib/master/')
 var shared = require('../capre/adaptor_behaviour')
 
 describe('base', function() {
@@ -38,8 +37,8 @@ describe('base', function() {
     it('can listen on a port', function(done) {
       base.listen(3000, function(err) {
         assert.ok(!err)
-        assert.ok(base.capre.flush)
-        assert.ok(base.capre.register)
+        assert.ok(base.flush)
+        assert.ok(base.register)
         assert.ok(base._backend)
         done()
       })
@@ -50,7 +49,7 @@ describe('base', function() {
         var self = this
         base.listen(3000, function(err) {
           assert.ok(!err)
-          self.capre = base.capre
+          self.capre = base
           done()
         })
       })
@@ -73,19 +72,18 @@ describe('base', function() {
       it('should be able to connect to running capre server', function(done) {
         base.connect(3000, function(err) {
           assert.ok(!err)
-          assert.ok(base.capre.flush)
-          assert.ok(base.capre.register)
+          assert.ok(base.flush)
+          assert.ok(base.register)
           assert.ok(base._backend)
           done()
         })
       })
       describe('api', function() {
         before(function() {
-          this.capre = base.capre
+          this.capre = base
         })
         shared.shouldBehaveLikeACapreAdaptor()
       })
     })
   })
 })
-
