@@ -5,6 +5,8 @@ var assert = require('assert')
 var enode = require('enode')
 var mockery = require('mockery')
 
+var shared = require('../capre/adaptor_behaviour')
+
 var isPortTaken = function(port, callback) {
   var net = require('net')
   var tester = net.createServer()
@@ -73,6 +75,19 @@ describe('server', function() {
         assert.ok(server._api.getSyndex)
         server.shutdown(done)
       })
+    })
+    describe('api', function() {
+      before(function(done) {
+        var self = this
+        server = new Server('memory').listen(PORT, function(err) {
+          self.capre = server.capre
+          done()
+        })
+      })
+      after(function(done) {
+        server.shutdown(done)
+      })
+      shared.shouldBehaveLikeACapreAdaptor()
     })
   })
   describe('communication', function() {
