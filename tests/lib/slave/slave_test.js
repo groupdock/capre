@@ -28,6 +28,31 @@ describe('slave', function() {
   before(function(done) {
     master = new Master('redis').listen(PORT, done)
   })
+  beforeEach(function(done) {
+    async.parallel([
+      function(next) {
+        if (!master) return next()
+        master.flush(next)
+      },
+      function(next) {
+        if (!slave) return next()
+        slave.flush(next)
+      }
+    ], done)
+  })
+  afterEach(function(done) {
+    async.parallel([
+      function(next) {
+        if (!master) return next()
+        master.flush(next)
+      },
+      function(next) {
+        if (!slave) return next()
+        slave.flush(next)
+      }
+    ], done)
+  })
+
   describe('connection', function() {
     afterEach(function(done) {
       if (slave) slave.shutdown(done)
@@ -45,9 +70,6 @@ describe('slave', function() {
       slave = new Slave().connect(PORT, function() {
         slave.flush(done)
       })
-    })
-    after(function(done) {
-      slave.flush(done)
     })
     it('will return error if not supplied a type', function(done) {
       slave.sync(function(err) {
