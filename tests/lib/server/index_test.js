@@ -35,15 +35,49 @@ describe('server', function() {
       done()
     }
   })
-  describe('communication', function() {
+  describe('startup', function() {
     it('should listen on a particular port', function(done) {
-      var server = new Server('memory').listen(5000)
+      server = new Server('memory').listen(PORT)
       server.on('ready', function() {
         isPortTaken(PORT, function(err, taken) {
           assert.ok(taken)
           done()
         })
       })
+    })
+    it('should be able to shutdown', function(done) {
+      server.shutdown(function() {
+        isPortTaken(PORT, function(err, taken) {
+          assert.ok(!taken)
+          done()
+        })
+      })
+    })
+    it('should be able to shutdown multiple times', function(done) {
+      server.shutdown(function() {
+        server.shutdown(function() {
+          isPortTaken(PORT, function(err, taken) {
+            assert.ok(!taken)
+            done()
+          })
+        })
+      })
+    })
+
+    it('should have capre lib as an _api after listen', function(done) {
+      server = new Server('memory').listen(PORT, function(err) {
+        assert.ok(!err)
+        assert.ok(server._api)
+        assert.ok(server._api.flush)
+        assert.ok(server._api.register)
+        assert.ok(server._api.getSyndex)
+        server.shutdown(done)
+      })
+    })
+  })
+  describe('communication', function() {
+    before(function(done) {
+      server = new Server('memory').listen(5000, done)
     })
     it('should expose server api to connected clients', function(done) {
       var client = new enode.Client().connect(PORT)
@@ -59,7 +93,7 @@ describe('server', function() {
       })
     })
     it('should send string versions of errors', function(done) {
-       var client = new enode.Client().connect(PORT)
+      var client = new enode.Client().connect(PORT)
       client.once('ready', function(remote) {
         // should produce error
         var unknownType = 'lorem'
@@ -76,7 +110,6 @@ describe('server', function() {
     var MemoryBackend = require('../../../lib/capre/adaptors/memory')
     var JSONBackend = require('../../../lib/capre/adaptors/json')
     var RedisBackend = require('../../../lib/capre/adaptors/redis')
-
     it('memory', function() {
       var server = new Server('memory')
       assert.ok(server.backend instanceof MemoryBackend)
