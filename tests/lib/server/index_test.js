@@ -26,7 +26,6 @@ var isPortTaken = function(port, callback) {
   tester.listen(port)
 }
 
-
 describe('server', function() {
   var PORT = 5000
   var server
@@ -42,6 +41,7 @@ describe('server', function() {
       server = new Server('memory').listen(PORT)
       server.on('ready', function() {
         isPortTaken(PORT, function(err, taken) {
+          assert.ok(!err)
           assert.ok(taken)
           done()
         })
