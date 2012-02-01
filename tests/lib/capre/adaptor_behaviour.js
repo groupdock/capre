@@ -10,7 +10,7 @@ var Capre = require('../../../lib/capre/')
 var CapreRedisAdaptor = require('../../../lib/capre/adaptors/redis')
 var CapreMemoryAdaptor = require('../../../lib/capre/adaptors/memory')
 var redis = require("redis")
-
+var async = require('async')
 exports.shouldBehaveLikeACapreAdaptor = function(){
   var capre, backend
   var NUM_ITEMS = 20
@@ -340,8 +340,8 @@ exports.shouldBehaveLikeACapreAdaptor = function(){
         done()
       })
     })
-
   })
+
   describe('insert', function() {
     var type = 'User'
     beforeEach(function(done) {
@@ -439,6 +439,17 @@ exports.shouldBehaveLikeACapreAdaptor = function(){
           assert.equal(syndex, 1)
           done()
         })
+      })
+    })
+    it('should not return error if inserting many items', function(done) {
+      var number = _.range(4096)
+      async.map(number, function(item, next) {
+        var id = uuid()
+        capre.insert(type, id, function(err) {
+          next(err, id)
+        })
+      }, function(err, items) {
+        done(err)
       })
     })
   })

@@ -39,7 +39,7 @@ the master, the slave exchanges some data and then the README was over.
 # TODO
 
 * README
-
+* Transaction support for DB performance
 
 ```
 

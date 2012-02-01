@@ -7,14 +7,16 @@ var async = require('async')
 var _ = require('underscore')
 
 function generateItems(master, type, count, callback) {
-  master._registerIfMissing(type, function() {
+  master._registerIfMissing(type, function(err) {
+    if (err) return callback(err)
     var number = _.range(count)
-    async.map(number, function(item, next) {
+    async.mapSeries(number, function(item, next) {
       var id = uuid()
       master.insert(type, id, function(err) {
         next(err, id)
       })
     }, function(err, items) {
+
       callback(err, items)
     })
   })
@@ -22,11 +24,11 @@ function generateItems(master, type, count, callback) {
 
 describe('slave', function() {
   var PORT = 5000
-  var NUM_ITEMS = 2000
+  var NUM_ITEMS = 30
   var master, slave
 
   before(function(done) {
-    master = new Master('redis').listen(PORT, done)
+    master = new Master('json').listen(PORT, done)
   })
   beforeEach(function(done) {
     async.parallel([
