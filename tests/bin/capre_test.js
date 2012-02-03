@@ -18,6 +18,7 @@ describe('capre server executable', function() {
       server.once('exit', done)
       server.kill('SIGHUP')
     })
+    
     it('should listen and accept connections on default port', function(done) {
       server = exec('./bin/capre')
       var defaultPort = 3000
