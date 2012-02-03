@@ -11,11 +11,13 @@ describe('capre module', function() {
     capre = require('../index')
   })
   it('exposes master', function() {
-    assert.ok(capre.master)
-    assert.equal(capre.master, Master)
+    assert.ok(capre.Master)
+    assert.equal(capre.Master, Master)
+    assert.ok(typeof capre.Master === 'function')
   })
   it('exposes slave', function() {
-    assert.ok(capre.slave)
-    assert.equal(capre.slave, Slave)
+    assert.ok(capre.Slave)
+    assert.equal(capre.Slave, Slave)
+    assert.ok(typeof capre.Slave === 'function')
   })
 })
