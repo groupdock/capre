@@ -28,7 +28,7 @@ describe('slave', function() {
   var master, slave
 
   before(function(done) {
-    master = new Master('json').listen(PORT, done)
+    master = new Master('memory').listen(PORT, done)
   })
   beforeEach(function(done) {
     async.parallel([
@@ -50,11 +50,51 @@ describe('slave', function() {
       },
       function(next) {
         if (!slave) return next()
-        slave.flush(next)
+        slave.flush(function() {
+          // ignore errors
+          next()
+        })
       }
     ], done)
   })
-
+  describe('flush', function() {
+    it('should error if flushing before setup', function(done) {
+      var slave2 = new Slave()
+      slave2.flush(function(err) {
+        assert.ok(err)
+        done()
+      })
+    })
+    describe('flush', function() {
+      var type = 'User'
+      var slave = new Slave('json')
+      before(function(done) {
+        slave.connect(PORT, function(err) {
+          slave.setSyndex(type, 3, function() {
+            slave.shutdown(done)
+          })
+        })
+      })
+      after(function(done) {
+        slave.flush(function() {
+          slave.shutdown(done)
+        })
+      })
+      it('should allow flushing after setup', function(done) {
+        slave.connect(PORT, function(err) {
+          assert.ok(!err)
+          slave.flush(function(err) {
+            assert.ok(!err)
+            slave.capre.getSyndex(type, function(err) {
+              assert.ok(err)
+              assert.ok(/unknown/.test(err.message))
+              done()
+            })
+          })
+        })
+      })
+    })
+  })
   describe('connection', function() {
     afterEach(function(done) {
       if (slave) slave.shutdown(done)
@@ -94,6 +134,7 @@ describe('slave', function() {
           slave.flush(done)
         })
       })
+
       it('can sync with populated server', function(done) {
         master.register(type, function() {
           master.insert(type, uuid(), function() {
