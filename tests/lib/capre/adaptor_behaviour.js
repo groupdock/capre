@@ -434,7 +434,7 @@ exports.shouldBehaveLikeACapreAdaptor = function(){
       capre.insert(unknownType, id, function(err, data) {
         assert.ok(!err)
         assert.equal(data.syndex, 1)
-        capre.getSyndex(unknownType, id, function(err, syndex) {
+        capre.getSyndex(unknownType, function(err, syndex) {
           assert.ok(!err)
           assert.equal(syndex, 1)
           done()
