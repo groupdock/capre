@@ -37,6 +37,16 @@ describe('server', function() {
     }
   })
   describe('startup', function() {
+    it('should emit init when backend ready', function(done) {
+      server = new Server('memory')
+      server.on('init', function() {
+        assert.ok(server)
+        assert.ok(server.initialised)
+        assert.ok(server.backend)
+        assert.ok(server.capre)
+        done()
+      })
+    })
     it('should listen on a particular port', function(done) {
       server = new Server('memory').listen(PORT)
       server.on('ready', function() {

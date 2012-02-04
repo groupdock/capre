@@ -57,6 +57,18 @@ describe('slave', function() {
       }
     ], done)
   })
+  describe('init', function() {
+    it('should emit init when backend is ready', function(done) {
+      var slave = new Slave('memory')
+      slave.on('init', function() {
+        assert.ok(slave)
+        assert.ok(slave.backend)
+        assert.ok(slave.capre)
+        assert.ok(slave.initialised)
+        done()
+      })
+    })
+  })
   describe('flush', function() {
     it('should error if flushing before setup', function(done) {
       var slave2 = new Slave()
