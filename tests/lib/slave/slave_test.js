@@ -2,6 +2,9 @@ var assert = require('assert')
 
 var Master = require('../../../lib/master')
 var Slave = require('../../../lib/slave')
+
+var enode = require('enode')
+
 var uuid = require('node-uuid')
 var async = require('async')
 var _ = require('underscore')
@@ -114,6 +117,17 @@ describe('slave', function() {
     it('can connect to master', function(done) {
       slave = new Slave().connect(PORT, function(err) {
         assert.ok(!err)
+        done()
+      })
+    })
+    it('will error if master doesn\'t have correct interface', function(done) {
+      var CRAP_PORT = 6000
+      var crapMaster = new enode.Server().listen(CRAP_PORT, function(err) {
+        assert.ok(!err, err)
+      })
+      slave = new Slave().connect(CRAP_PORT, function(err) {
+        assert.ok(err)
+        assert.ok(/method\ missing/.test(err.message))
         done()
       })
     })
