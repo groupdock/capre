@@ -41,7 +41,8 @@ options.file = program.file
 options.host = program.redisHost
 options.port = program.redisPort
 
-var master = new Server(program.backend, options).listen(program.port, function() {
+var master = new Server(program.backend, options).listen(program.port, function(err) {
+  if (err) throw new Error(err)
   winston.info('Capre Server Started.')
   winston.info('Using '+ program.backend +' backend, listening on port ' + program.port)
 })
