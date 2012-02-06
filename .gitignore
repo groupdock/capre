@@ -2,3 +2,4 @@ node_modules
 .DS_Store
 tests/tmp
 npm-debug.log
+slave.json
