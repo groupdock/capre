@@ -2,7 +2,7 @@
 
 var _ = require('underscore')
 var assert = require('assert')
-var uuid = require('node-uuid')
+var uuid = require('shortid')
 
 var sinon = require('sinon')
 
