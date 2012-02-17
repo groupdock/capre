@@ -495,6 +495,45 @@ exports.shouldBehaveLikeACapreAdaptor = function(){
         done(err)
       })
     })
+    describe('inserting multiple s', function() {
+      it('should be able to insert multiple ids at once', function(done) {
+        var ids = []
+        _.times(NUM_ITEMS, function() {
+          ids.push(uuid())
+        })
+        capre.insert(type, ids, function(err, items) {
+          assert.ok(!err, err)
+          var itemIds = _.pluck(items, 'id')
+          //assert.deepEqual(items, ids)
+          assert.ok(_.all(ids, function(id) {
+            return _.include(itemIds, id)
+          }))
+          assert.equal(items.length, NUM_ITEMS)
+          done()
+        })
+      })
+      it('should err if any of the ids being inserted already exist', function(done) {
+        insertMany(type, 1, function(err, insertedId) {
+           var ids = []
+          _.times(NUM_ITEMS, function() {
+            ids.push(uuid())
+          })
+          ids.push(insertedId)
+          capre.getSyndex(type, function(err, syndex) {
+            assert.ok(!err, err)
+            var syndexBefore = syndex
+            capre.insert(type, ids, function(err, items) {
+              assert.ok(err)
+              assert.ok(/duplicate/.test(err.toString()))
+              capre.getSyndex(type, function(err, syndexAfter) {
+                assert.equal(syndexBefore, syndexAfter)
+                done()
+              })
+            })
+          })
+        })
+      })
+    })
   })
   describe('update', function() {
     var type = 'User'
