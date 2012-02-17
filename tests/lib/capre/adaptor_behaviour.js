@@ -11,9 +11,35 @@ var CapreRedisAdaptor = require('../../../lib/capre/adaptors/redis')
 var CapreMemoryAdaptor = require('../../../lib/capre/adaptors/memory')
 var redis = require("redis")
 var async = require('async')
+
 exports.shouldBehaveLikeACapreAdaptor = function(){
   var capre, backend
   var NUM_ITEMS = 20
+
+
+  function insertMany(type, num, callback) {
+    var ids = []
+    _.times(num, function() {
+      ids.push(uuid())
+    })
+    capre.getSyndex(type, function(err, syndex) {
+      assert.ok(!err, err)
+      var beforeSyndex = syndex
+      async.forEach(ids, function(id, done) {
+        capre.insert(type, id, done)
+      }, function(err) {
+        assert.ok(!err, err)
+        capre.getSyndex(type, function(err, syndex) {
+          var afterSyndex = syndex
+          console.log(type, 'b ghj', beforeSyndex)
+          console.log(type, 'a ghj', afterSyndex)
+          assert.strictEqual(afterSyndex, beforeSyndex + num)
+          callback(null, ids)
+        })
+      })
+    })
+  }
+
 
   before(function() {
     capre = this.capre
