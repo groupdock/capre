@@ -212,7 +212,7 @@ exports.shouldBehaveLikeACapreAdaptor = function(){
   })
   describe('find', function() {
     var type = 'User'
-    it('can find things', function(done) {
+    it('can find a thing', function(done) {
       capre.register(type, function(err) {
         var id = uuid()
         capre.insert(type, id, function(err) {
@@ -220,6 +220,20 @@ exports.shouldBehaveLikeACapreAdaptor = function(){
             assert.ok(!err)
             assert.ok(found)
             assert.ok(found.id)
+            done()
+          })
+        })
+      })
+    })
+    it('can find many things', function(done) {
+      capre.register(type, function(err, typeData) {
+        insertMany(type, NUM_ITEMS, function(err, ids) {
+          assert.ok(!err)
+          capre.find(type, ids, function(err, items) {
+            assert.ok(!err)
+            assert.equal(items.length, NUM_ITEMS)
+            var itemIds = _.pluck(items, 'id')
+            assert.deepEqual(itemIds, ids)
             done()
           })
         })
