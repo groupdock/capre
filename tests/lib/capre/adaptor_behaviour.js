@@ -54,7 +54,7 @@ exports.shouldBehaveLikeACapreAdaptor = function(){
     it('will flush types', function(done) {
       var type = 'FlushType'
       capre.register(type, function(err, typeData) {
-        assert.ok(!err)
+        assert.ok(!err, err)
         capre.flush(function(err) {
           assert.ok(!err)
           capre.getTypes(function(err, types) {
@@ -111,7 +111,7 @@ exports.shouldBehaveLikeACapreAdaptor = function(){
     it('won\'t error if registering already registered type', function(done) {
       capre.register(type, function(err, syndex) {
         capre._registerIfMissing(type, function(err, typeInfo) {
-          assert.ok(!err)
+          assert.ok(!err, err)
           assert.ok(typeInfo)
           assert.strictEqual(typeInfo.syndex, 0)
           done()
@@ -196,7 +196,7 @@ exports.shouldBehaveLikeACapreAdaptor = function(){
     it('should be able to get numeric syndex for an id', function(done) {
       var id = uuid()
       capre.insert(type, id, function(err) {
-        assert.ok(!err)
+        assert.ok(!err, err)
         capre.getSyndex(type, id, function(err, syndex) {
           assert.ok(!err)
           assert.strictEqual(typeof syndex, 'number')
@@ -208,7 +208,7 @@ exports.shouldBehaveLikeACapreAdaptor = function(){
     it('should return null for getting syndex of unknown id', function(done) {
       var nonExistingID = uuid()
       capre.getSyndex(type, nonExistingID, function(err, syndex) {
-        assert.ok(!err)
+        assert.ok(!err, err)
         assert.strictEqual(syndex, null)
         done()
       })
@@ -243,10 +243,12 @@ exports.shouldBehaveLikeACapreAdaptor = function(){
     var type = 'User'
     it('can find a thing', function(done) {
       capre.register(type, function(err) {
+        assert.ok(!err, err)
         var id = uuid()
         capre.insert(type, id, function(err) {
+          assert.ok(!err, err)
           capre.find(type, id, function(err, found) {
-            assert.ok(!err)
+            assert.ok(!err, err)
             assert.ok(found)
             assert.ok(found.id)
             done()
@@ -585,7 +587,7 @@ exports.shouldBehaveLikeACapreAdaptor = function(){
 
     it('should be able to update existing id', function(done) {
       capre.update(type, id, function(err, data) {
-        assert.ok(!err)
+        assert.ok(!err, err)
         assert.strictEqual(data.syndex, 2)
         capre.getSyndex(type, id, function(err, syndex) {
           assert.ok(!err, err)
