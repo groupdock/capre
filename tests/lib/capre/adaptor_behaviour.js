@@ -252,6 +252,17 @@ exports.shouldBehaveLikeACapreAdaptor = function(){
         })
       })
     })
+    it('will return null if doesn\'t find anything', function(done) {
+      var nonExistentId = uuid()
+      capre.register(type, function(err, typeData) {
+        assert.ok(!err, err)
+        capre.find(type, nonExistentId, function(err, items) {
+          assert.ok(!err)
+          assert.strictEqual(items, null)
+          done()
+        })
+      })
+    })
     it('can find many things', function(done) {
       capre.register(type, function(err, typeData) {
         assert.ok(!err, err)
@@ -264,6 +275,20 @@ exports.shouldBehaveLikeACapreAdaptor = function(){
             assert.deepEqual(itemIds, ids)
             done()
           })
+        })
+      })
+    })
+    it('will return null if doesn\'t find anything', function(done) {
+      var nonExistentIds = []
+      _.times(NUM_ITEMS, function() {
+        nonExistentIds.push(uuid())
+      })
+      capre.register(type, function(err, typeData) {
+        assert.ok(!err, err)
+        capre.find(type, nonExistentIds, function(err, items) {
+          assert.ok(!err)
+          assert.strictEqual(items, null)
+          done()
         })
       })
     })
