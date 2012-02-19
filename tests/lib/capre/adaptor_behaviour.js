@@ -72,12 +72,12 @@ exports.shouldBehaveLikeACapreAdaptor = function(){
       var type = 'SomeType'
       capre.register(type, function(err, typeData) {
         assert.ok(!err)
-        assert.equal(typeData.syndex, 0)
+        assert.strictEqual(typeData.syndex, 0)
         capre.getTypes(function(err, types) {
           assert.ok(!err)
           assert.ok(types)
           assert.equal(types.length, 1)
-          assert.equal(types[0], type)
+          assert.strictEqual(types[0], type)
         })
         done()
       })
@@ -98,12 +98,12 @@ exports.shouldBehaveLikeACapreAdaptor = function(){
     it('can register types', function(done) {
       capre._registerIfMissing(type, function(err, typeData) {
         assert.ok(!err)
-        assert.equal(typeData.syndex, 0)
+        assert.strictEqual(typeData.syndex, 0)
         capre.getTypes(function(err, types) {
           assert.ok(!err)
           assert.ok(types)
           assert.equal(types.length, 1)
-          assert.equal(types[0], type)
+          assert.strictEqual(types[0], type)
           done()
         })
       })
@@ -113,7 +113,7 @@ exports.shouldBehaveLikeACapreAdaptor = function(){
         capre._registerIfMissing(type, function(err, typeInfo) {
           assert.ok(!err)
           assert.ok(typeInfo)
-          assert.equal(typeInfo.syndex, 0)
+          assert.strictEqual(typeInfo.syndex, 0)
           done()
         })
       })
@@ -123,10 +123,10 @@ exports.shouldBehaveLikeACapreAdaptor = function(){
         assert.ok(!err)
         capre.bumpSyndex(type, function(err, syndex) {
           assert.ok(!err)
-          assert.equal(syndex, 1)
+          assert.strictEqual(syndex, 1)
           capre._registerIfMissing(type, function(err, typeInfo) {
             assert.ok(!err)
-            assert.equal(typeInfo.syndex, 1)
+            assert.strictEqual(typeInfo.syndex, 1)
             done()
           })
         })
@@ -170,10 +170,11 @@ exports.shouldBehaveLikeACapreAdaptor = function(){
     beforeEach(function(done) {
       capre.register(type, done)
     })
-    it('should be able to get syndex for a type', function(done) {
+    it('should be able to get numeric syndex for a type', function(done) {
       capre.getSyndex(type, function(err, syndex) {
         assert.ok(!err)
-        assert.equal(syndex, 0)
+        assert.strictEqual(typeof syndex, 'number')
+        assert.strictEqual(syndex, 0)
         done()
       })
     })
@@ -192,13 +193,14 @@ exports.shouldBehaveLikeACapreAdaptor = function(){
         done()
       })
     })
-    it('should be able to get syndex for an id', function(done) {
+    it('should be able to get numeric syndex for an id', function(done) {
       var id = uuid()
       capre.insert(type, id, function(err) {
         assert.ok(!err)
         capre.getSyndex(type, id, function(err, syndex) {
           assert.ok(!err)
-          assert.equal(syndex, 1)
+          assert.strictEqual(typeof syndex, 'number')
+          assert.strictEqual(syndex, 1)
           done()
         })
       })
@@ -230,7 +232,8 @@ exports.shouldBehaveLikeACapreAdaptor = function(){
         capre.get(type, id, function(err, data) {
           assert.ok(!err)
           assert.equal(data.id, id)
-          assert.equal(data.syndex, 1)
+          assert.strictEqual(typeof data.syndex, 'number')
+          assert.strictEqual(data.syndex, 1)
           done()
         })
       })
@@ -275,13 +278,13 @@ exports.shouldBehaveLikeACapreAdaptor = function(){
     it('bumps the syndex for a type', function(done) {
       capre.bumpSyndex(type, function(err, syndex) {
         assert.ok(!err)
-        assert.equal(syndex, 1)
+        assert.strictEqual(syndex, 1)
         capre.bumpSyndex(type, function(err, syndex) {
           assert.ok(!err)
-          assert.equal(syndex, 2)
+          assert.strictEqual(syndex, 2)
           capre.getSyndex(type, function(err, syndex) {
             assert.ok(!err)
-            assert.equal(syndex, 2)
+            assert.strictEqual(syndex, 2)
             done()
           })
         })
@@ -292,15 +295,15 @@ exports.shouldBehaveLikeACapreAdaptor = function(){
       capre.register(anotherType, function() {
         capre.bumpSyndex(type, function(err, syndex) {
           assert.ok(!err)
-          assert.equal(syndex, 1)
+          assert.strictEqual(syndex, 1)
           capre.bumpSyndex(anotherType, function(err, syndex) {
             assert.ok(!err)
             capre.getSyndex(anotherType, function(err, syndex) {
               assert.ok(!err)
-              assert.equal(syndex, 1)
+              assert.strictEqual(syndex, 1)
               capre.getSyndex(type, function(err, syndex) {
                 assert.ok(!err)
-                assert.equal(syndex, 1)
+                assert.strictEqual(syndex, 1)
                 done()
               })
             })
@@ -327,14 +330,14 @@ exports.shouldBehaveLikeACapreAdaptor = function(){
       var newSyndex = 7
       capre.setSyndex(type, newSyndex, function(err, syndex) {
         assert.ok(!err)
-        assert.equal(syndex, newSyndex)
+        assert.strictEqual(syndex, newSyndex)
         newSyndex = 16
         capre.setSyndex(type, newSyndex, function(err, syndex) {
           assert.ok(!err)
-          assert.equal(syndex, newSyndex)
+          assert.strictEqual(syndex, newSyndex)
           capre.getSyndex(type, function(err, syndex) {
             assert.ok(!err)
-            assert.equal(syndex, newSyndex)
+            assert.strictEqual(syndex, newSyndex)
             done()
           })
         })
@@ -347,11 +350,11 @@ exports.shouldBehaveLikeACapreAdaptor = function(){
       capre.register(anotherType, function() {
         capre.setSyndex(type, newSyndex, function(err, syndex) {
           assert.ok(!err)
-          assert.equal(syndex, newSyndex)
+          assert.strictEqual(syndex, newSyndex)
           newSyndex = 4
           capre.setSyndex(anotherType, newSyndex, function(err, syndex) {
             assert.ok(!err)
-            assert.equal(syndex, 4)
+            assert.strictEqual(syndex, 4)
             done()
           })
         })
@@ -361,7 +364,7 @@ exports.shouldBehaveLikeACapreAdaptor = function(){
       var newSyndex = 7
       capre.setSyndex(type, newSyndex, function(err, syndex) {
         assert.ok(!err)
-        assert.equal(syndex, newSyndex)
+        assert.strictEqual(syndex, newSyndex)
         newSyndex = 3
         capre.setSyndex(type, newSyndex, function(err, syndex) {
           assert.ok(err)
@@ -400,7 +403,7 @@ exports.shouldBehaveLikeACapreAdaptor = function(){
       })
       describe('returned data', function() {
         it('should have syndex of one', function() {
-          assert.equal(data.syndex, 1)
+          assert.strictEqual(data.syndex, 1)
         })
         it('should have supplied id', function() {
           assert.equal(data.id, id)
@@ -409,7 +412,7 @@ exports.shouldBehaveLikeACapreAdaptor = function(){
       it('added to capre list', function(done) {
         capre.getSyndex(type, id, function(err, syndex) {
           assert.ok(!err)
-          assert.equal(syndex, 1)
+          assert.strictEqual(syndex, 1)
           done()
         })
       })
@@ -425,7 +428,7 @@ exports.shouldBehaveLikeACapreAdaptor = function(){
           capre.insert(type, id, function(err, item) {
             assert.ok(!err)
             assert.ok(item)
-            assert.equal(item.syndex, 3)
+            assert.strictEqual(item.syndex, 3)
             done()
           })
         })
@@ -440,10 +443,10 @@ exports.shouldBehaveLikeACapreAdaptor = function(){
         capre.insert(type, id, function(err, data) {
           assert.ok(!err)
           assert.ok(data)
-          assert.equal(data.syndex, i + 1)
+          assert.strictEqual(data.syndex, i + 1)
           capre.getSyndex(type, id, function(err, syndex) {
             assert.ok(!err)
-            assert.equal(syndex, data.syndex)
+            assert.strictEqual(syndex, data.syndex)
             if (i < NUM_ITEMS) { 
               insert(++i)
             } else {
@@ -462,7 +465,7 @@ exports.shouldBehaveLikeACapreAdaptor = function(){
           assert.ok(/duplicate/.test(err.toString()))
           capre.getSyndex(type, id, function(err, syndex) {
             assert.ok(!err)
-            assert.equal(syndex, 1)
+            assert.strictEqual(syndex, 1)
             done()
           })
         })
@@ -473,10 +476,10 @@ exports.shouldBehaveLikeACapreAdaptor = function(){
       var unknownType = 'unknownType'
       capre.insert(unknownType, id, function(err, data) {
         assert.ok(!err)
-        assert.equal(data.syndex, 1)
+        assert.strictEqual(data.syndex, 1)
         capre.getSyndex(unknownType, function(err, syndex) {
           assert.ok(!err)
-          assert.equal(syndex, 1)
+          assert.strictEqual(syndex, 1)
           done()
         })
       })
@@ -526,7 +529,7 @@ exports.shouldBehaveLikeACapreAdaptor = function(){
               assert.ok(err)
               assert.ok(/duplicate/.test(err.toString()))
               capre.getSyndex(type, function(err, syndexAfter) {
-                assert.equal(syndexBefore, syndexAfter)
+                assert.strictEqual(syndexBefore, syndexAfter)
                 done()
               })
             })
@@ -558,10 +561,10 @@ exports.shouldBehaveLikeACapreAdaptor = function(){
     it('should be able to update existing id', function(done) {
       capre.update(type, id, function(err, data) {
         assert.ok(!err)
-        assert.equal(data.syndex, 2)
+        assert.strictEqual(data.syndex, 2)
         capre.getSyndex(type, id, function(err, syndex) {
-          assert.ok(!err)
-          assert.equal(syndex, 2)
+          assert.ok(!err, err)
+          assert.strictEqual(syndex, 2)
           done()
         })
       })
@@ -572,10 +575,10 @@ exports.shouldBehaveLikeACapreAdaptor = function(){
         capre.update(type, id, function(err, data) {
           assert.ok(!err) 
           assert.ok(data)
-          assert.equal(data.syndex, i + 1)
+          assert.strictEqual(data.syndex, i + 1)
           capre.getSyndex(type, id, function(err, syndex) {
             assert.ok(!err)
-            assert.equal(syndex, data.syndex)
+            assert.strictEqual(syndex, data.syndex)
             if (i < NUM_ITEMS) { 
               update(++i)
             } else {
@@ -623,10 +626,10 @@ exports.shouldBehaveLikeACapreAdaptor = function(){
         if (err) return done(err)
         capre.upsert(type, id, function(err, data) {
           assert.ok(!err)
-          assert.equal(data.syndex, 2)
+          assert.strictEqual(data.syndex, 2)
           capre.getSyndex(type, id, function(err, syndex) {
             assert.ok(!err)
-            assert.equal(syndex, 2)
+            assert.strictEqual(syndex, 2)
             done()
           })
         })
@@ -638,10 +641,10 @@ exports.shouldBehaveLikeACapreAdaptor = function(){
         assert.ok(!err)
         capre.upsert(type, id, function(err, data) {
           assert.ok(!err)
-          assert.equal(data.syndex, 2) // remember, we inserted on in the beforeEach
+          assert.strictEqual(data.syndex, 2) // remember, we inserted on in the beforeEach
           capre.getSyndex(type, id, function(err, syndex) {
             assert.ok(!err)
-            assert.equal(syndex, 2)
+            assert.strictEqual(syndex, 2)
             done()
           })
         })
@@ -655,10 +658,10 @@ exports.shouldBehaveLikeACapreAdaptor = function(){
         capre.upsert(type, id, function(err, data) {
           assert.ok(!err)
           assert.ok(data)
-          assert.equal(data.syndex, i + 1)
+          assert.strictEqual(data.syndex, i + 1)
           capre.getSyndex(type, id, function(err, syndex) {
             assert.ok(!err)
-            assert.equal(syndex, data.syndex)
+            assert.strictEqual(syndex, data.syndex)
             if (i < NUM_ITEMS) { 
               upsert(++i)
             } else {
@@ -676,7 +679,7 @@ exports.shouldBehaveLikeACapreAdaptor = function(){
         assert.ok(!err)
         capre.getSyndex(unknownType, function(err, syndex) {
           assert.ok(!err)
-          assert.equal(syndex, 1)
+          assert.strictEqual(syndex, 1)
           done()
         })
       })
@@ -686,10 +689,10 @@ exports.shouldBehaveLikeACapreAdaptor = function(){
       var unknownType = 'unknownType'
       capre.upsert(unknownType, id, function(err, data) {
         assert.ok(!err)
-        assert.equal(data.syndex, 1)
+        assert.strictEqual(data.syndex, 1)
         capre.getSyndex(unknownType, id, function(err, syndex) {
           assert.ok(!err)
-          assert.equal(syndex, 1)
+          assert.strictEqual(syndex, 1)
           done()
         })
       })
@@ -716,7 +719,7 @@ exports.shouldBehaveLikeACapreAdaptor = function(){
           capre.sync(type, currentSyndex, function(err, items, typeInfo) {
             assert.ok(!err)
             assert.equal(items.length, 1)
-            assert.equal(data.syndex, typeInfo.syndex)
+            assert.strictEqual(data.syndex, typeInfo.syndex)
             assert.equal(items[0], id2)
             done()
           })
@@ -787,7 +790,7 @@ exports.shouldBehaveLikeACapreAdaptor = function(){
       })
       describe('returned data', function() {
         it('should have syndex of two', function() {
-          assert.equal(data.syndex, 2)
+          assert.strictEqual(data.syndex, 2)
         })
         it('should have supplied id', function() {
           assert.equal(data.id, id)
