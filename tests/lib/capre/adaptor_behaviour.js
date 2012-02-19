@@ -52,7 +52,7 @@ exports.shouldBehaveLikeACapreAdaptor = function(){
   })
   describe('flush', function() {
     it('will flush types', function(done) {
-      var type = 'SomeType'
+      var type = 'FlushType'
       capre.register(type, function(err, typeData) {
         assert.ok(!err)
         capre.flush(function(err) {
