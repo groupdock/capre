@@ -505,7 +505,6 @@ exports.shouldBehaveLikeACapreAdaptor = function(){
         capre.insert(type, ids, function(err, items) {
           assert.ok(!err, err)
           var itemIds = _.pluck(items, 'id')
-          //assert.deepEqual(items, ids)
           assert.ok(_.all(ids, function(id) {
             return _.include(itemIds, id)
           }))
