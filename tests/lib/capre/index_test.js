@@ -20,9 +20,16 @@ describe('capre', function() {
   })
   describe('redis adaptor', function() {
     before(function(done){
+      var redis = require("redis")
       var self = this
       var backend = new CapreRedisAdaptor(function() {
-        self.capre = new Capre(backend, done)
+        var client = redis.createClient()
+        if (client.ready) return self.capre = new Capre(backend, done)
+        client.on('ready', function() {
+          client.flushdb(function() {
+            self.capre = new Capre(backend, done)
+          })
+        })
       })
     })
     shared.shouldBehaveLikeACapreAdaptor()
