@@ -254,8 +254,9 @@ exports.shouldBehaveLikeACapreAdaptor = function(){
     })
     it('can find many things', function(done) {
       capre.register(type, function(err, typeData) {
+        assert.ok(!err, err)
         insertMany(type, NUM_ITEMS, function(err, ids) {
-          assert.ok(!err)
+          assert.ok(!err, err)
           capre.find(type, ids, function(err, items) {
             assert.ok(!err)
             assert.equal(items.length, NUM_ITEMS)
