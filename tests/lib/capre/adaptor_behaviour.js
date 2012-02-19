@@ -526,7 +526,7 @@ exports.shouldBehaveLikeACapreAdaptor = function(){
         done(err)
       })
     })
-    describe('inserting multiple s', function() {
+    describe('inserting multiple ids', function() {
       it('should be able to insert multiple ids at once', function(done) {
         var ids = []
         _.times(NUM_ITEMS, function() {
