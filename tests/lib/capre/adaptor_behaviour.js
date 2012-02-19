@@ -31,8 +31,6 @@ exports.shouldBehaveLikeACapreAdaptor = function(){
         assert.ok(!err, err)
         capre.getSyndex(type, function(err, syndex) {
           var afterSyndex = syndex
-          console.log(type, 'b ghj', beforeSyndex)
-          console.log(type, 'a ghj', afterSyndex)
           assert.strictEqual(afterSyndex, beforeSyndex + num)
           callback(null, ids)
         })
