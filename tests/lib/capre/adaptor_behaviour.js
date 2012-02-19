@@ -274,9 +274,9 @@ exports.shouldBehaveLikeACapreAdaptor = function(){
           assert.ok(!err, err)
           capre.find(type, ids, function(err, items) {
             assert.ok(!err)
-            assert.equal(items.length, NUM_ITEMS)
             var itemIds = _.pluck(items, 'id')
             assert.deepEqual(itemIds, ids)
+            assert.equal(items.length, NUM_ITEMS)
             done()
           })
         })
