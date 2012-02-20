@@ -40,7 +40,6 @@ exports.shouldBehaveLikeACapreAdaptor = function(){
     })
   }
 
-
   before(function() {
     capre = this.capre
   })
@@ -845,6 +844,27 @@ exports.shouldBehaveLikeACapreAdaptor = function(){
         assert.ok(err)
         assert.ok(/unknown/.test(err.toString()))
         done()
+      })
+    })
+  })
+  describe('flatten', function() {
+    var type = 'User'
+    it('should merge all data into a single syndex', function(done) {
+      capre.register(type, function(err, typeData) {
+        assert.ok(!err, err)
+        insertMany(type, NUM_ITEMS, function(err, ids) {
+          assert.ok(!err, err)
+          capre.flatten(type, function(err, items) {
+            assert.ok(!err, err)
+            var itemIds = _.pluck(items, 'id')
+            assert.deepEqual(itemIds, ids)
+            assert.equal(items.length, NUM_ITEMS)
+            assert.ok(_.all(items, function(item) {
+              return item.syndex === NUM_ITEMS
+            }))
+            done()
+          })
+        })
       })
     })
   })
