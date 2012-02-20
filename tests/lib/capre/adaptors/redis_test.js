@@ -27,7 +27,7 @@ describe('redis adaptor', function() {
       redisAdaptor._client = client
     })
     it('should clean db', function(done) {
-      var stub = sinon.stub(client, 'flushall')
+      var stub = sinon.stub(client, 'flushdb')
       stub.callsArg(0)
       redisAdaptor.flush(function() {
         assert.ok(stub.called)
