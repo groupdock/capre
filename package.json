@@ -2,7 +2,7 @@
   "author": "Tim Oxley <secoif@gmail.com> (unit.io)",
   "name": "capre",
   "description": "Cross-Server Data Replication",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "repository": {
     "url": ""
   },
