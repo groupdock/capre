@@ -39,9 +39,9 @@ describe('master', function() {
   })
   describe('getSyndex', function() {
     it('should get numeric syndex for a type', function(done) {
-      master._mark(type, uuid(), function(err) {
+      master.mark(type, uuid(), function(err) {
         assert.ifError(err)
-        master._mark(type, uuid(), function(err) {
+        master.mark(type, uuid(), function(err) {
         assert.ifError(err)
           master.getSyndex(type, function(err, syndex) {
             assert.ifError(err)
@@ -53,7 +53,7 @@ describe('master', function() {
       })
     })
     it('sanitizes type', function(done) {
-      master._mark(type, uuid(), function(err, item) {
+      master.mark(type, uuid(), function(err, item) {
         assert.ifError(err)
         master.getSyndex(sanitize(type), function(err, syndex) {
           assert.ifError(err)
@@ -72,12 +72,58 @@ describe('master', function() {
     })
   })
   describe('mark', function() {
+    describe('requires a type', function() {
+      it('undefined type', function(done){
+        master.mark(undefined, uuid(), function(err, item) {
+          assert.ok(err)
+          assert.ok(/type is required/.test(err.message))
+          done()
+        })
+      })
+    })
+    describe('requires an id', function() {
+      it('undefined id', function(done){
+        master.mark(type, undefined, function(err, item) {
+          assert.ok(err)
+          assert.ok(/id is required/.test(err.message))
+          done()
+        })
+      })
+      it('empty array id', function(done){
+        master.mark(type, [], function(err, item) {
+          assert.ok(err)
+          assert.ok(/id is required/.test(err.message))
+          done()
+        })
+      })
+      it('empty string id', function(done){
+        master.mark(type, '', function(err, item) {
+          assert.ok(err)
+          assert.ok(/id is required/.test(err.message))
+          done()
+        })
+      })
+      it('false id', function(done){
+        master.mark(type, false, function(err, item) {
+          assert.ok(err)
+          assert.ok(/id is required/.test(err.message))
+          done()
+        })
+      })
+      it('function id', function(done){
+        master.mark(type, function() {}, function(err, item) {
+          assert.ok(err)
+          assert.ok(/id is required/.test(err.message))
+          done()
+        })
+      })
+    })
     it('should increase syndex', function(done) {
-      master._mark(type, uuid(), function(err) {
+      master.mark(type, uuid(), function(err) {
         assert.ifError(err)
-        master._mark(type, uuid(), function(err) {
+        master.mark(type, uuid(), function(err) {
           assert.ifError(err)
-          master._mark(type, uuid(), function(err, syndex) {
+          master.mark(type, uuid(), function(err, syndex) {
             assert.ifError(err)
             assert.strictEqual(syndex, 3)
             master.getSyndex(type, function(err, syndex) {
