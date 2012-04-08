@@ -22,9 +22,7 @@ describe('master', function() {
     master = new Master(client)
   })
   afterEach(function(done) {
-    client.flushall(function() {
-      done()
-    })
+    client.flushall(done)
   })
 
   var insertMany = helpers.generateItems(master)
@@ -75,12 +73,13 @@ describe('master', function() {
   })
   describe('mark', function() {
     it('should increase syndex', function(done) {
-      master._mark(type, uuid(), function(err, item) {
+      master._mark(type, uuid(), function(err) {
         assert.ifError(err)
-        master._mark(type, uuid(), function(err, item) {
+        master._mark(type, uuid(), function(err) {
           assert.ifError(err)
-          master._mark(type, uuid(), function(err, item) {
+          master._mark(type, uuid(), function(err, syndex) {
             assert.ifError(err)
+            assert.strictEqual(syndex, 3)
             master.getSyndex(type, function(err, syndex) {
               assert.ifError(err)
               assert.strictEqual(syndex, 3)
