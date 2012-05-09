@@ -8,7 +8,7 @@ participant "Secondary App"
 HR System -> Main App: New User 'Bob'
 Main App -> Capre: A User id 'Bob' changed
 Secondary App -> Main App: Sync users
-Main App -> Capre: Secondary App wants to Sync
-Capre --> Main App: id 'Bob'
-Main App -> Main App: get 'Bob' from DB
+Main App -> Capre: Secondary App wants to Sync Users
+Capre --> Main App: Secondary App needs User id 'Bob'
+Main App -> Main App: get User 'Bob' from Database
 Main App --> Secondary App: User Bob
