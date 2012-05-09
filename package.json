@@ -10,9 +10,6 @@
   "scripts": {
     "test": "find ./tests -name '*_test.js' | xargs mocha -t 5000 -R spec"
   },
-  "bin": {
-    "capre": "./bin/capre"
-  },
   "engines": {
     "node": "~0.6.7"
   },
