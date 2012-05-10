@@ -168,6 +168,18 @@ describe('master', function() {
         assert.ifError(err)
       })
     })
+    it('should emit "mark:type" after marking an item', function(done) {
+      var item = uuid()
+      master.once('mark:'+ type, function(markedType, markedItem) {
+        assert.strictEqual(type, markedType)
+        assert.equal(item, markedItem)
+        done()
+      })
+
+      master.mark(type, item, function(err) {
+        assert.ifError(err)
+      })
+    })
     describe('inserting multiple ids', function() {
       it('should be able to insert multiple ids at once', function(done) {
         var ids = []
