@@ -110,6 +110,13 @@ describe('master', function() {
           done()
         })
       })
+      it('object id', function(done){
+        master.mark(type, {}, function(err, item) {
+          assert.ok(err)
+          assert.ok(/id is required/.test(err.message))
+          done()
+        })
+      })
       it('function id', function(done){
         master.mark(type, function() {}, function(err, item) {
           assert.ok(err)

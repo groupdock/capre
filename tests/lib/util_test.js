@@ -2,13 +2,19 @@ var assert = require('assert')
 var util = require('../../lib/util')
 
 describe('sanitize', function() {
+  var s = util.sanitize
   it('sanitizes input to a-z, 0-9 -_:', function() {
-    var s = util.sanitize
     assert.strictEqual(s('2 D!@o$%g^&*'), '2 Dog')
     assert.strictEqual(s('2:D!@o$%g^&*'), '2:Dog')
   })
+  it('handles objects with own toString methods', function() {
+    var man = {name: 'John'}
+    man.toString = function() {
+      return this.name
+    }
+    assert.strictEqual(s(man), 'John')
+  })
   it('handles strange values', function() {
-    var s = util.sanitize
     assert.strictEqual(s(null), '')
     assert.strictEqual(s(undefined), '')
     assert.strictEqual(s(false), '')
