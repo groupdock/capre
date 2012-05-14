@@ -1,25 +1,37 @@
-// creates a capre 'master' connected to redis database on default redis
-// port of 6379. You can also supply an options object.
-var capre = require('../../index.js')()
+'use strict'
+
+var _ = require('underscore')
+var EventEmitter = require('events').EventEmitter
+var util = require('util')
+
+var User = new EventEmitter()
 
 // pretend db
-var db = []
+User.db = {}
 
 // Generic User Model
-var User = function(name) {
-  this.id = require('shortid')()
-  this.name = name
+var UserModel = function(options) {
+  this.id = options.id || require('shortid')()
+  this.name = options.name
+  if (!this.name) throw new Error('User requires a name')
 }
 
-User.prototype.save = function() {
+UserModel.prototype.save = function() {
+  var User = require('./user_model')
   // save user to db (e.g. mysql) here
-  db[id] = this
-  // Mark user in capre
-  capre.mark('User', this.id)
+  User.db[this.id] = this
+  User.emit('saved', this)
 }
 
-User.find = function(id) {
-  return db[id]
+User.create = function(userData) {
+  return new UserModel(userData)
+}
+
+User.find = function(ids) {
+  if (!ids.length) return []
+  return ids.map(function(id) {
+    return User.db[id]
+  })
 }
 
 module.exports = User

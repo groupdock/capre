@@ -24,5 +24,8 @@
     "shortid": "~1.0.6",
     "sinon": "~1.3.4"
   },
-  "optionalDependencies": {}
+  "optionalDependencies": {
+    "commander": "~0.6.0",
+    "Faker": "~0.1.3"
+  }
 }
