@@ -118,10 +118,19 @@ master.flush() // flushes all data from this master and slaves
 slave.flush() // flushes all data from the current slave
 ```
 
+## Example
+There is a sample application in [/groupdock/capre/examples/](/groupdock/capre/examples/). It contains an example master application, and an example slave application. They communicate over HTTP, and contain *basic* in-memory databases.
+
+To get the examples running open up two tabs, `cd`ed to the
+`/examples/basic/` directory in the capre repository. Run the main app
+in one tab and the secondary app in the other. Follow the on-screen
+instructions. The example is provided to demonstrate code usage, so be
+sure to check out the code.
+
 ###TODO
 
-* API Docs
-* Examples
+* More API Docs
+* More Examples
 
 ### What is 'Capre'
 
