@@ -119,7 +119,8 @@ slave.flush() // flushes all data from the current slave
 ```
 
 ## Example
-There is a sample application in [/groupdock/capre/examples/](/groupdock/capre/examples/). It contains an example master application, and an example slave application. They communicate over HTTP, and contain *basic* in-memory databases.
+
+There is a sample application in [/groupdock/capre/tree/master/examples/basic](/groupdock/capre/tree/master/examples/basic). It contains an example master application, and an example slave application. They communicate over HTTP, and contain *basic* in-memory databases.
 
 To get the examples running open up two tabs, `cd`ed to the
 `/examples/basic/` directory in the capre repository. Run the main app
