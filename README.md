@@ -17,10 +17,9 @@ Capre doesn't care what data you're replicating, or how you want to
 handle transferring the actual data. Capre solely keeps track of
 unique identifiers and which of them were changed since your last sync.
 
-
 ## Capre Master
 
-The Capre Master tracks what items change in your data set.
+The Capre Master is where you track which items have changed in your data set.
 
 ```js
 var capre = require('capre')
@@ -32,7 +31,7 @@ var master = capre.createMaster()
 
 ## Capre Slave
 
-Slaves keep track of what position an external application is up to in the sync process. Slaves and Masters exist on the same machine.
+Slaves know what point an external application is up to in the sync process. Slaves and Masters exist on the same machine.
 
 ```js
 // create a capre 'slave', passing the capre master to slave to
@@ -41,10 +40,10 @@ var slave = capre.createSlave(master)
 
 ## Syncing
 
-To sync, simply call slave.sync with the name of the application you
-want to sync, along with the 'type'. This will give you a list of unique
-identifiers that changed since the last sync. You can now pull these ids
-down from whatever DB you're using and send them to slave app.
+To sync, simply call `slave.sync` with the name of the application you
+want to sync, along with the `type` you wish to sync (e.g. 'Users'). 
+This will give you a list of unique identifiers that changed since the last sync. You can now pull these ids down from whatever DB you're using and 
+send them to slave app.
 ```js
 slave.sync('my-application', 'User', function(err, userIds) {
   // get the ids from your DB  (e.g. *SQL, mongo)
@@ -77,7 +76,7 @@ app.post('user/new', function(req, res, next) {
   DB.save('User', newUser, function(err, savedUser) {
     if (err) return next(err)
     // assume saving an item produces an id
-    // mark user in capre master for type 'User'
+    // mark user's unique id in capre master for type 'User'
     master.mark('User', savedUser.id, function(err) {
       if (err) return next(err)
       return res.send(200) // Success!
@@ -97,14 +96,13 @@ master.mark('Posts', post, function() {
 })
 
 // You can use unique identifiers as part of your 'type' to
-// gain more fine grained marking/syncing
-
-// mark post by a user
+// gain more fine grained marking/syncing.
+// e.g. mark Posts by a specific User
 master.mark('Posts:' + user.id, post, function() {
   // etc
 })
 
-// Sync posts by a user
+// Sync Posts by a specific User
 slave.sync('blog-application', 'Posts:' + user.id, function(err, userPostIds) {
   assert.ifError(err)
   // userPostIds contains a list of all posts by a user that changed.
